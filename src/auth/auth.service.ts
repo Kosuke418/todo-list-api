@@ -1,13 +1,34 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserRepository } from './user.repository';
-import { User } from 'src/entities/user.entity';
+import { User } from '../entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { JwtService } from '@nestjs/jwt';
+import { CredentialsDto } from './dto/credentials.dto';
+import * as bcypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  async signup(createUserDto: CreateUserDto): Promise<User> {
+  async signUp(createUserDto: CreateUserDto): Promise<User> {
     return await this.userRepository.createUser(createUserDto);
+  }
+
+  async signIn(
+    credentialsDto: CredentialsDto,
+  ): Promise<{ accessToken: string }> {
+    const { username, password } = credentialsDto;
+    const user = await this.userRepository.findOne({ username });
+
+    if (user && (await bcypt.compare(password, user.password))) {
+      const payload = { id: user.id, username: user.username };
+      const accessToken = await this.jwtService.sign(payload);
+      return { accessToken };
+    }
+
+    throw new UnauthorizedException('confirm username or password');
   }
 }

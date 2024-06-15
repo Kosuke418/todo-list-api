@@ -1,5 +1,6 @@
-import { TaskStatus } from 'src/tasks/task-status.enum';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { TaskStatus } from '../tasks/task-status.enum';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from './user.entity';
 
 @Entity()
 export class Task {
@@ -20,4 +21,10 @@ export class Task {
 
   @Column()
   updatedAt: string;
+
+  @ManyToOne(() => User, (user) => user.tasks)
+  user: User;
+
+  @Column()
+  userId: string;
 }
