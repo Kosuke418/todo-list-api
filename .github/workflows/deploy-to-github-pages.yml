@@ -5,9 +5,26 @@ on:
     branches:
       - develop
       - master
+
+env:
+  DATABASE_PASSWORD: root
+  DATABASE_PORT: 3306
+  DATABASE_DB: api
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    services:
+      mysql:
+        image: mysql:8.0.32
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ DATABASE_PASSWORD }}
+          MYSQL_DATABASE: ${{ DATABASE_DB }}
+        ports:
+          - ${{ MYSQL_PORT }}:3306
     steps:
       - name: Chekcout code
         uses: actions/checkout@v4
