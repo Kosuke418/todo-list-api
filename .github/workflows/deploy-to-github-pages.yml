@@ -51,6 +51,7 @@ jobs:
           database_type: mysql
           user: ${{ env.DATABASE_USER }}
           password: ${{ env.DATABASE_PASSWORD }}
+          schema: ${{ env.DATABASE_DB }}
           output_dir: 'docs/schema'
 
       - name: Build Pages
