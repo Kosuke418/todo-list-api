@@ -14,6 +14,10 @@
         align-items: center;
         font-family: Arial, sans-serif;
       }
+      .button-container {
+        display: flex;
+        gap: 20px;
+      }
       .center-button {
         padding: 10px 20px;
         font-size: 16px;
@@ -22,11 +26,16 @@
     </style>
   </head>
   <body>
-    <button
-      class="center-button"
-      onclick="location.href='./api_specification.html'"
-    >
-      API Specification
-    </button>
+    <div class="button-container">
+      <button
+        class="center-button"
+        onclick="location.href='./api_specification.html'"
+      >
+        API Specification
+      </button>
+      <button class="center-button" onclick="location.href='./schema/'">
+        Schema
+      </button>
+    </div>
   </body>
 </html>
