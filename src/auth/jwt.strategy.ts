@@ -3,8 +3,9 @@ import { ExtractJwt, Strategy as BaseJwtStrategy } from 'passport-jwt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { User } from '../entities/user.entity';
-import { UserRepository } from './user.repository';
+import { User } from '../db/entities/user.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 // JwtについているPayload情報の型
 interface JWTPayload {
@@ -19,7 +20,7 @@ interface JWTPayload {
 export class JwtStrategy extends PassportStrategy(BaseJwtStrategy) {
   constructor(
     private readonly configService: ConfigService,
-    private readonly userRepository: UserRepository,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {
     super({
       // Authorization bearerからトークンを読み込む関数を返す
@@ -33,7 +34,7 @@ export class JwtStrategy extends PassportStrategy(BaseJwtStrategy) {
 
   async validate(payload: JWTPayload): Promise<User> {
     const { id, username } = payload;
-    const user = await this.userRepository.findOne({ id, username });
+    const user = await this.userRepository.findOneBy({ id, username });
 
     if (user) {
       return user;

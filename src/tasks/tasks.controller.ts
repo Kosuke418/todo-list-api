@@ -12,12 +12,12 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
-import { Task } from '../entities/task.entity';
+import { Task } from '../db/entities/task.entity';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { GetUser } from '../auth/decorator/get-user.decorator';
-import { User } from '../entities/user.entity';
+import { User } from '../db/entities/user.entity';
 
 @Controller('tasks')
 @UseGuards(JwtAuthGuard)
