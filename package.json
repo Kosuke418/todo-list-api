@@ -22,7 +22,7 @@
     "migration:generate": "yarn typeorm -d src/db/data-source.ts migration:generate",
     "migration:run": "yarn typeorm -d ./src/db/data-source.ts migration:run",
     "migration:revert": "yarn typeorm -d src/db/data-source.ts migration:revert",
-    "api:create:specification": "cross-env NODE_ENV=development EXPORT_SPECIFICATION=true yarn start",
+    "api:create:specification": "cross-env EXPORT_SPECIFICATION=true yarn start",
     "api:create:doc": "yarn api:create:specification && npx redoc-cli build ./api/specification.json -o ./docs/api_specification.html"
   },
   "dependencies": {
