@@ -36,7 +36,7 @@ jobs:
           -e MYSQL_ROOT_PASSWORD=root
           -e MYSQL_DATABASE=api
           --entrypoint sh mysql:8 
-          -c "exec docker-entrypoint.sh mysqld --default-authentication-plugin=mysql_native_password"
+          -c "exec docker-entrypoint.sh mysqld --mysql-native-password=ON"
     steps:
       - name: Chekcout code
         uses: actions/checkout@v4
