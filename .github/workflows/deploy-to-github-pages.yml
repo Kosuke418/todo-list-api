@@ -26,6 +26,7 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: api
+          MYSQL_AUTHENTICATION_PLUGIN: mysql_native_password
         ports:
           - 3306:3306
         options: >-
