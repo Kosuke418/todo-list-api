@@ -6,6 +6,14 @@ on:
       - develop
       - master
 
+env:
+  DATABASE_HOST: localhost
+  DATABASE_USER: root
+  DATABASE_PASSWORD: root
+  DATABASE_PORT: 3306
+  DATABASE_DB: api
+  JWT_SECRET_KEY: hoge
+
 jobs:
   build:
     runs-on: ubuntu-latest
