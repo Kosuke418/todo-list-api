@@ -21,10 +21,10 @@ jobs:
       mysql:
         image: mysql:8.0.32
         env:
-          MYSQL_ROOT_PASSWORD: ${{ DATABASE_PASSWORD }}
-          MYSQL_DATABASE: ${{ DATABASE_DB }}
+          MYSQL_ROOT_PASSWORD: ${{ env.DATABASE_PASSWORD }}
+          MYSQL_DATABASE: ${{ env.DATABASE_DB }}
         ports:
-          - ${{ MYSQL_PORT }}:3306
+          - ${{ env.DATABASE_PORT }}:3306
     steps:
       - name: Chekcout code
         uses: actions/checkout@v4
