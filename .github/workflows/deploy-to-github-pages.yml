@@ -6,11 +6,6 @@ on:
       - develop
       - master
 
-env:
-  DATABASE_PASSWORD: root
-  DATABASE_PORT: 3306
-  DATABASE_DB: api
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,10 +16,10 @@ jobs:
       mysql:
         image: mysql:8.0.32
         env:
-          MYSQL_ROOT_PASSWORD: ${{ env.DATABASE_PASSWORD }}
-          MYSQL_DATABASE: ${{ env.DATABASE_DB }}
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: api
         ports:
-          - ${{ env.DATABASE_PORT }}:3306
+          - 3306:3306
     steps:
       - name: Chekcout code
         uses: actions/checkout@v4
