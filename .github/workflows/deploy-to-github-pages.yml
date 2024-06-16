@@ -36,8 +36,8 @@ jobs:
     steps:
       - name: Chekcout code
         uses: actions/checkout@v4
-      - name: Install
-        run: yarn install
+      - name: Install Dependencies
+        run: yarn --frozen-lockfile
       - name: Build Pages
         run: yarn api:create:doc
       - name: Upload Documents

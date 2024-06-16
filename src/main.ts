@@ -30,8 +30,8 @@ async function bootstrap() {
       JSON.stringify(document, null, 2),
     );
     process.exit(0);
-  } else {
-    await app.listen(3000);
   }
+
+  await app.listen(3000);
 }
 bootstrap();
