@@ -8,6 +8,7 @@ import {
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiOkResponse,
+  ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { AccessTokenDto } from './dto/access-token.dto';
@@ -16,9 +17,9 @@ import { AccessTokenDto } from './dto/access-token.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-  @Post('signup')
+  @ApiOperation({ summary: 'ユーザ登録' })
   @ApiCreatedResponse({
-    description: 'ユーザー登録完了',
+    description: 'ユーザ登録完了',
   })
   @ApiBadRequestResponse({
     description: '入力値のフォーマットエラー',
@@ -26,13 +27,14 @@ export class AuthController {
   @ApiInternalServerErrorResponse({
     description: 'DBサーバ接続エラー',
   })
+  @Post('signup')
   async signUp(@Body() createUserDto: CreateUserDto): Promise<User> {
     return await this.authService.signUp(createUserDto);
   }
 
-  @Post('signin')
+  @ApiOperation({ summary: 'ユーザ認証' })
   @ApiOkResponse({
-    description: '認証完了',
+    description: 'ユーザ認証完了',
     type: AccessTokenDto,
   })
   @ApiBadRequestResponse({
@@ -41,6 +43,7 @@ export class AuthController {
   @ApiInternalServerErrorResponse({
     description: 'DBサーバ接続エラー',
   })
+  @Post('signin')
   async singIn(
     @Body() credentialsDto: CredentialsDto,
   ): Promise<{ accessToken: string }> {
