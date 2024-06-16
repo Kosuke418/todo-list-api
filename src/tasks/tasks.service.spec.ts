@@ -11,8 +11,8 @@ const mockUser1: User = {
   id: '1',
   username: 'hoge1',
   password: 'hoge',
-  createdAt: '2024-06-15T01:54:29.523Z',
-  updatedAt: '2024-06-15T01:54:29.523Z',
+  createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+  updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
   tasks: [],
 };
 
@@ -20,8 +20,8 @@ const mockUser2: User = {
   id: '2',
   username: 'hoge1',
   password: 'hoge',
-  createdAt: '2024-06-15T01:54:29.523Z',
-  updatedAt: '2024-06-15T01:54:29.523Z',
+  createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+  updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
   tasks: [],
 };
 

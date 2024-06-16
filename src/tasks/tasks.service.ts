@@ -18,13 +18,13 @@ export class TasksService {
   ) {}
 
   async findAll(user: User): Promise<Task[]> {
-    return await this.taskRepository.findBy({ user });
+    return await this.taskRepository.findBy({ userId: user.id });
   }
 
   async findById(id: string, user: User): Promise<Task> {
-    const task = await this.taskRepository.findOneBy({ id, user });
+    const task = await this.taskRepository.findOneBy({ id, userId: user.id });
     if (!task) {
-      throw new NotFoundException('商品が存在しません');
+      throw new NotFoundException('todoが存在しません');
     }
     return task;
   }
@@ -35,8 +35,6 @@ export class TasksService {
       title,
       content,
       status: TaskStatus.NEW,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
       user,
     });
 
@@ -53,7 +51,7 @@ export class TasksService {
     for (let i: number = 0; i < updateTaskDtos.length; i++) {
       const targetTask = await this.taskRepository.findOneBy({
         id: updateTaskDtos[i].id,
-        user,
+        userId: user.id,
       });
       if (!targetTask) {
         throw new NotFoundException(
@@ -61,7 +59,6 @@ export class TasksService {
         );
       }
       targetTask.status = updateTaskDtos[i].status;
-      targetTask.updatedAt = new Date().toISOString();
       task.push(targetTask);
     }
     const updatedTask = await this.taskRepository.save(task);
@@ -74,9 +71,9 @@ export class TasksService {
   async delete(id: string, user: User): Promise<void> {
     const task = await this.taskRepository.findOneBy({ id });
     if (task.userId !== user.id) {
-      throw new BadRequestException('他人の商品を削除することはできません');
+      throw new BadRequestException('他人のtodoを削除することはできません');
     }
-    const response = await this.taskRepository.delete({ id, user });
+    const response = await this.taskRepository.delete({ id, userId: user.id });
     if (response.affected !== 1) {
       throw new NotFoundException(`${id}のデータを削除できませんでした`);
     }

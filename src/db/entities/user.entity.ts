@@ -1,4 +1,11 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Task } from './task.entity';
 import { Exclude } from 'class-transformer';
 
@@ -14,11 +21,18 @@ export class User {
   @Exclude({ toPlainOnly: true })
   password: string;
 
-  @Column()
-  createdAt: string;
+  @CreateDateColumn({
+    type: 'datetime',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  createdAt: Date;
 
-  @Column()
-  updatedAt: string;
+  @UpdateDateColumn({
+    type: 'datetime',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updatedAt: Date;
 
   @OneToMany(() => Task, (task) => task.user)
   tasks: Task[];
