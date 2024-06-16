@@ -36,27 +36,75 @@ $ yarn install
 
 ```bash
 # development
-$ yarn run start
+$ yarn start
 
 # watch mode
-$ yarn run start:dev
+$ yarn start:dev
 
 # production mode
-$ yarn run start:prod
+$ yarn start:prod
 ```
 
 ## Test
 
 ```bash
 # unit tests
-$ yarn run test
+$ yarn test
 
 # e2e tests
-$ yarn run test:e2e
+$ yarn test:e2e
 
 # test coverage
-$ yarn run test:cov
+$ yarn test:cov
 ```
+
+## Databese
+
+```bash
+# create db
+$ docker-compose up -d
+
+# db migration
+$ migration:generate src/db/migrations/${filename}
+
+# db migration
+$ yarn migration:run
+
+# db revert
+$ migration:revert
+```
+
+## 動作確認方法
+
+ローカル環境にnode、yarnのインストールをしてください。
+下記バージョンで動作確認を行っております。
+
+```
+yarn： v1.22.22
+node： v22.2.0
+```
+
+下記の順番でコマンドを実行してください
+
+```bash
+# 1 create .env
+$ cp .env.sample .env
+
+# 2 create db
+$ docker-compose up -d
+
+# 3 db migration
+$ yarn migration:run
+
+# 4 install
+$ yarn install
+
+# 5 start
+$ yarn start:dev
+```
+
+以下に接続し、"Hello World!"が表示されれば成功
+http://localhost:3000/api/healthcheck
 
 ## Support
 
