@@ -77,7 +77,7 @@ describe('TasksService', () => {
       expect(result).toEqual(expected);
     });
 
-    it('異常系: 商品が存在しない', async () => {
+    it('異常系: タスクが存在しない', async () => {
       jest
         .spyOn(taskRepository, 'findOneBy')
         .mockImplementation(async () => null);
@@ -140,7 +140,7 @@ describe('TasksService', () => {
       expect(spy).toHaveBeenCalled();
     });
 
-    it('異常系: 他者のtodoを変更', async () => {
+    it('異常系: 他者のタスクを変更', async () => {
       jest
         .spyOn(taskRepository, 'findOneBy')
         .mockImplementation(async () => {});
@@ -152,7 +152,7 @@ describe('TasksService', () => {
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('異常系: データの更新に失敗', async () => {
+    it('異常系: タスクの更新に失敗', async () => {
       jest
         .spyOn(taskRepository, 'findOneBy')
         .mockImplementation(async () => mockTask);
@@ -190,7 +190,7 @@ describe('TasksService', () => {
       expect(spy).toHaveBeenCalled();
     });
 
-    it('異常系: 他人のtodoを削除', async () => {
+    it('異常系: 他人のタスクを削除', async () => {
       jest
         .spyOn(taskRepository, 'findOneBy')
         .mockImplementation(async () => mockTask);
@@ -199,7 +199,7 @@ describe('TasksService', () => {
       );
     });
 
-    it('異常系: todoが存在しない', async () => {
+    it('異常系: タスクの削除に失敗', async () => {
       jest
         .spyOn(taskRepository, 'findOneBy')
         .mockImplementation(async () => mockTask);

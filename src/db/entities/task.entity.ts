@@ -10,13 +10,13 @@ import {
 import { User } from './user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
-@Entity()
+@Entity({ comment: 'タスクテーブル' })
 export class Task {
   @ApiProperty({
     example: 'e6c015b3-cca1-4cca-970e-f0af96bf3727',
     type: String,
   })
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', { comment: 'タスクid' })
   id: string;
 
   @ApiProperty({
@@ -24,7 +24,7 @@ export class Task {
     type: String,
     maxLength: 255,
   })
-  @Column()
+  @Column({ comment: 'タイトル' })
   title: string;
 
   @ApiProperty({
@@ -32,14 +32,14 @@ export class Task {
     type: String,
     maxLength: 255,
   })
-  @Column()
+  @Column({ comment: '内容' })
   content: string;
 
   @ApiProperty({
     example: 'NEW',
     type: String,
   })
-  @Column()
+  @Column({ comment: 'ステータス' })
   status: TaskStatus;
 
   @ApiProperty({
@@ -49,6 +49,7 @@ export class Task {
   @CreateDateColumn({
     type: 'datetime',
     default: () => 'CURRENT_TIMESTAMP(6)',
+    comment: '作成日時',
   })
   createdAt: Date;
 
@@ -60,6 +61,7 @@ export class Task {
     type: 'datetime',
     default: () => 'CURRENT_TIMESTAMP(6)',
     onUpdate: 'CURRENT_TIMESTAMP(6)',
+    comment: '更新日時',
   })
   updatedAt: Date;
 
@@ -71,6 +73,6 @@ export class Task {
     type: String,
     maxLength: 255,
   })
-  @Column()
+  @Column({ comment: 'ユーザid' })
   userId: string;
 }

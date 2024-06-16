@@ -76,8 +76,9 @@ $ migration:revert
 
 ## 動作確認方法
 
-ローカル環境にnode、yarnのインストールをしてください。
-下記バージョンで動作確認を行っております。
+ローカル環境にnode、yarnのインストールをしてください
+
+下記バージョンで動作確認済み
 
 ```
 yarn： v1.22.22
@@ -104,7 +105,32 @@ $ yarn start:dev
 ```
 
 以下に接続し、"Hello World!"が表示されれば成功
+
 http://localhost:3000/api/healthcheck
+
+## ドキュメント
+
+API仕様書、DB仕様書（masterブランチpush時にGithubActionにて自動生成）
+
+https://kosuke418.github.io/todo-list-api/
+
+## やったこと
+
+- 検索、登録、更新、削除のAPIの実装
+- DB仕様書の作成（GithubActionにて自動生成）
+- ユーザごとでタスクを制御し、認証/認可を行える
+
+## やりたいこと
+
+- API仕様書の作成（GithubActionにて自動生成）
+- テストコードの実装
+- 一覧検索にクエリを追加
+- PR時の自動テスト
+- タスクのカテゴリと期日の追加
+- AWSへのデプロイ機能（サーバーレス）
+- 本番環境でのマイグレーションの仕組み
+- ChatGPTを利用してTODOを提案するAPI
+- ログの設計と実装
 
 ## Support
 
