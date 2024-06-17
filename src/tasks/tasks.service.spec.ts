@@ -6,6 +6,7 @@ import { NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Task } from '../db/entities/task.entity';
 import { Repository } from 'typeorm';
+import { TaskResponseDto } from './dto/task-response.dto';
 
 const mockUser1: User = {
   id: '1',
@@ -60,15 +61,11 @@ describe('TasksService', () => {
 
   describe('findById', () => {
     it('正常系', async () => {
-      const expected = {
+      const expected: TaskResponseDto = {
         id: 'hoge',
         title: 'hogehoge',
         content: 'hoge',
         status: TaskStatus.NEW,
-        createdAt: '',
-        updatedAt: '',
-        userId: mockUser1.id,
-        user: mockUser1,
       };
       jest
         .spyOn(taskRepository, 'findOneBy')
@@ -89,15 +86,11 @@ describe('TasksService', () => {
 
   describe('create', () => {
     it('正常系', async () => {
-      const expected = {
+      const expected: TaskResponseDto = {
         id: 'hoge',
         title: 'hogehoge',
         content: 'hoge',
         status: TaskStatus.NEW,
-        createdAt: '',
-        updatedAt: '',
-        userId: mockUser1.id,
-        user: mockUser1,
       };
 
       jest
@@ -124,7 +117,6 @@ describe('TasksService', () => {
       createdAt: '',
       updatedAt: '',
       userId: mockUser1.id,
-      user: mockUser1,
     };
     it('正常系', async () => {
       jest
@@ -202,7 +194,6 @@ describe('TasksService', () => {
       createdAt: '',
       updatedAt: '',
       userId: mockUser1.id,
-      user: mockUser1,
     };
     it('正常系', async () => {
       jest
