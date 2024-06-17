@@ -60,6 +60,7 @@ export class Task {
   userId: string;
 
   @CreateDateColumn({
+    name: 'created_at',
     type: 'datetime',
     default: () =>
       process.env.NODE_ENV === 'test'
@@ -70,6 +71,7 @@ export class Task {
   createdAt: Date;
 
   @UpdateDateColumn({
+    name: 'updated_at',
     type: 'datetime',
     default: () =>
       process.env.NODE_ENV === 'test'
