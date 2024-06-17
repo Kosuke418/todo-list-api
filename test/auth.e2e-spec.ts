@@ -47,9 +47,4 @@ describe('AuthController (e2e)', () => {
     await app.close();
     await moduleFixture.close();
   });
-
-  // テストで起動したNestアプリを終了しないとJestで警告が発生するため、以下のコードで終了
-  afterEach(async () => {
-    // await connection.rollbackTransaction();
-  });
 });

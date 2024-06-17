@@ -53,7 +53,7 @@ describe('TasksController (e2e)', () => {
     });
   });
 
-  // ユーザー登録~更新のテストスイートを実行
+  // タスク一覧取得API
   it('/tasks (GET)', async () => {
     const token = jwtService.sign(
       { id: 'hoge', username: 'hogehoge' },
@@ -67,7 +67,6 @@ describe('TasksController (e2e)', () => {
   });
 
   afterAll(async () => {
-    // テスト後にトランザクションをロールバックし、接続を閉じる
     await app.close();
     await moduleFixture.close();
   });
