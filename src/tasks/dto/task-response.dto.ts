@@ -1,25 +1,24 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsArray,
   IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsUUID,
   MaxLength,
-  ValidateNested,
 } from 'class-validator';
-import { TaskStatus } from '../task-status.enum';
-import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import { IsUndefinedable } from '../../util/decorator/undefinedable.decorator';
+import { TaskStatus } from '../task-status.enum';
+import { Expose } from 'class-transformer';
 
-export class UpdateTask {
+export class TaskResponseDto {
   @ApiProperty({
     example: 'e6c015b3-cca1-4cca-970e-f0af96bf3727',
     type: String,
   })
   @IsUUID()
   @IsNotEmpty()
+  @Expose()
   id: string;
 
   @ApiProperty({
@@ -32,6 +31,7 @@ export class UpdateTask {
   @IsNotEmpty()
   @IsString()
   @MaxLength(255)
+  @Expose()
   title: string;
 
   @ApiProperty({
@@ -43,6 +43,7 @@ export class UpdateTask {
   @IsOptional()
   @IsString()
   @MaxLength(255)
+  @Expose()
   content: string;
 
   @ApiProperty({
@@ -52,12 +53,6 @@ export class UpdateTask {
   })
   @IsUndefinedable()
   @IsEnum(TaskStatus)
+  @Expose()
   status: TaskStatus;
-}
-
-export class UpdateTaskListDto {
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => UpdateTask)
-  updateTasks: UpdateTask[];
 }

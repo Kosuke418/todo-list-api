@@ -118,12 +118,12 @@ https://kosuke418.github.io/todo-list-api/
 
 - 検索、登録、更新、削除のAPIの実装
 - DB仕様書の作成（GithubActionにて自動生成）
+- API仕様書の作成（GithubActionにて自動生成）
 - ユーザごとでタスクを制御し、認証/認可を行える
 
 ## やりたいこと
 
-- API仕様書の作成（GithubActionにて自動生成）
-- テストコードの実装
+- テストコードの実装（e2eテスト実装）
 - 一覧検索にクエリを追加
 - PR時の自動テスト
 - タスクのカテゴリと期日の追加
@@ -131,16 +131,8 @@ https://kosuke418.github.io/todo-list-api/
 - 本番環境でのマイグレーションの仕組み
 - ChatGPTを利用してTODOを提案するAPI
 - ログの設計と実装
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- DBのユーザ追加
+- テストデータ投入スクリプト
 
 ## License
 

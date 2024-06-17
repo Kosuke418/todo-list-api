@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -10,7 +11,7 @@ import {
 import { User } from './user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
-@Entity({ comment: 'タスクテーブル' })
+@Entity({ name: 'tasks', comment: 'タスクテーブル' })
 export class Task {
   @ApiProperty({
     example: 'e6c015b3-cca1-4cca-970e-f0af96bf3727',
@@ -24,48 +25,30 @@ export class Task {
     type: String,
     maxLength: 255,
   })
-  @Column({ comment: 'タイトル' })
+  @Column({ comment: 'タイトル', length: 255 })
   title: string;
 
   @ApiProperty({
     example: '一時間以上の筋トレを行う',
     type: String,
     maxLength: 255,
+    nullable: true,
   })
-  @Column({ comment: '内容' })
+  @Column({ comment: '内容', length: 255, nullable: true })
   content: string;
 
   @ApiProperty({
     example: 'NEW',
     type: String,
   })
-  @Column({ comment: 'ステータス' })
+  @Column({ comment: 'ステータス', length: 255 })
   status: TaskStatus;
 
-  @ApiProperty({
-    example: '2024-06-16T00:48:03.168Z',
-    type: Date,
+  @ManyToOne(() => User, (user) => user.tasks, {
+    onDelete: 'CASCADE',
+    nullable: false,
   })
-  @CreateDateColumn({
-    type: 'datetime',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-    comment: '作成日時',
-  })
-  createdAt: Date;
-
-  @ApiProperty({
-    example: '2024-06-16T00:48:03.168Z',
-    type: Date,
-  })
-  @UpdateDateColumn({
-    type: 'datetime',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-    onUpdate: 'CURRENT_TIMESTAMP(6)',
-    comment: '更新日時',
-  })
-  updatedAt: Date;
-
-  @ManyToOne(() => User, (user) => user.tasks)
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @ApiProperty({
@@ -73,6 +56,30 @@ export class Task {
     type: String,
     maxLength: 255,
   })
-  @Column({ comment: 'ユーザid' })
+  @Column({ name: 'user_id', comment: 'ユーザid', length: 255 })
   userId: string;
+
+  @CreateDateColumn({
+    type: 'datetime',
+    default: () =>
+      process.env.NODE_ENV === 'test'
+        ? `strftime('%Y-%m-%d %H:%M:%S.%f', 'now')`
+        : 'CURRENT_TIMESTAMP(6)',
+    comment: '作成日時',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'datetime',
+    default: () =>
+      process.env.NODE_ENV === 'test'
+        ? `strftime('%Y-%m-%d %H:%M:%S.%f', 'now')`
+        : 'CURRENT_TIMESTAMP(6)',
+    onUpdate:
+      process.env.NODE_ENV === 'test'
+        ? `strftime('%Y-%m-%d %H:%M:%S.%f', 'now')`
+        : 'CURRENT_TIMESTAMP(6)',
+    comment: '更新日時',
+  })
+  updatedAt: Date;
 }

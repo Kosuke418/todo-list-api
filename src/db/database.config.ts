@@ -8,6 +8,17 @@ import { User } from './entities/user.entity';
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   createTypeOrmOptions(): TypeOrmModuleOptions {
     const configService = new ConfigService();
+    // テスト時はsqliteを使用
+    if (process.env.NODE_ENV === 'test') {
+      return {
+        type: 'sqlite',
+        database: ':memory:',
+        entities: [User, Task],
+        dropSchema: true,
+        synchronize: true,
+        logging: false,
+      };
+    }
     return {
       type: 'mysql',
       host: configService.get('DATABASE_HOST'),

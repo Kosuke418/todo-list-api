@@ -1,15 +1,13 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Task } from '../db/entities/task.entity';
-import { UpdateTaskDto } from './dto/update-task.dto';
+import { UpdateTaskListDto } from './dto/update-task.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { User } from '../db/entities/user.entity';
 import { Repository } from 'typeorm';
 import { TaskStatus } from './task-status.enum';
 import { InjectRepository } from '@nestjs/typeorm';
+import { TaskResponseDto } from './dto/task-response.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class TasksService {
@@ -17,19 +15,27 @@ export class TasksService {
     @InjectRepository(Task) private readonly taskRepository: Repository<Task>,
   ) {}
 
-  async findAll(user: User): Promise<Task[]> {
-    return await this.taskRepository.findBy({ userId: user.id });
+  async findAll(user: User): Promise<TaskResponseDto[]> {
+    const task = await this.taskRepository.findBy({ userId: user.id });
+    return plainToInstance(TaskResponseDto, task, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  async findById(id: string, user: User): Promise<Task> {
+  async findById(id: string, user: User): Promise<TaskResponseDto> {
     const task = await this.taskRepository.findOneBy({ id, userId: user.id });
     if (!task) {
       throw new NotFoundException('タスクが存在しません');
     }
-    return task;
+    return plainToInstance(TaskResponseDto, task, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  async create(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
+  async create(
+    createTaskDto: CreateTaskDto,
+    user: User,
+  ): Promise<TaskResponseDto> {
     const { title, content } = createTaskDto;
     const task = this.taskRepository.create({
       title,
@@ -40,25 +46,38 @@ export class TasksService {
 
     await this.taskRepository.save(task);
 
-    return task;
+    return plainToInstance(TaskResponseDto, task, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async updateStatus(
-    updateTaskDtos: UpdateTaskDto[],
+    updateTaskListDto: UpdateTaskListDto,
     user: User,
-  ): Promise<Task[]> {
-    let task: Task[] = [];
-    for (let i: number = 0; i < updateTaskDtos.length; i++) {
+  ): Promise<TaskResponseDto[]> {
+    let task: TaskResponseDto[] = [];
+    for (let i: number = 0; i < updateTaskListDto.updateTasks.length; i++) {
+      const updateTask = updateTaskListDto.updateTasks[i];
       const targetTask = await this.taskRepository.findOneBy({
-        id: updateTaskDtos[i].id,
+        id: updateTask.id,
         userId: user.id,
       });
       if (!targetTask) {
         throw new NotFoundException(
-          `id:${updateTaskDtos[i].id} は存在しないか、別のユーザのデータです`,
+          `id:${updateTask.id} は存在しないか、別のユーザのデータです`,
         );
       }
-      targetTask.status = updateTaskDtos[i].status;
+
+      // レスポンスとして更新後の内容を返したいので、undefinedの場合は内容を入れ替えずにおく
+      targetTask.title =
+        updateTask.title !== undefined ? updateTask.title : targetTask.title;
+      targetTask.content =
+        updateTask.content !== undefined
+          ? updateTask.content
+          : targetTask.content;
+      targetTask.status =
+        updateTask.status !== undefined ? updateTask.status : targetTask.status;
+
       task.push(targetTask);
     }
     const updatedTask = await this.taskRepository.save(task);
@@ -69,10 +88,6 @@ export class TasksService {
   }
 
   async delete(id: string, user: User): Promise<void> {
-    const task = await this.taskRepository.findOneBy({ id });
-    if (task.userId !== user.id) {
-      throw new BadRequestException('他人のタスクを削除することはできません');
-    }
     const response = await this.taskRepository.delete({ id, userId: user.id });
     if (response.affected !== 1) {
       throw new NotFoundException(`${id}のデータを削除できませんでした`);

@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TasksService } from './tasks.service';
 import { User } from '../db/entities/user.entity';
 import { TaskStatus } from './task-status.enum';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Task } from '../db/entities/task.entity';
 import { Repository } from 'typeorm';
@@ -134,7 +134,16 @@ describe('TasksService', () => {
         .spyOn(taskRepository, 'save')
         .mockImplementation(() => mockTask);
       await tasksService.updateStatus(
-        [{ id: 'hoge', status: TaskStatus.COMPLETED }],
+        {
+          updateTasks: [
+            {
+              id: 'hoge',
+              title: 'title',
+              content: 'content',
+              status: TaskStatus.DONE,
+            },
+          ],
+        },
         mockUser1,
       );
       expect(spy).toHaveBeenCalled();
@@ -146,7 +155,16 @@ describe('TasksService', () => {
         .mockImplementation(async () => {});
       await expect(
         tasksService.updateStatus(
-          [{ id: 'hoge', status: TaskStatus.COMPLETED }],
+          {
+            updateTasks: [
+              {
+                id: 'hoge',
+                title: 'title',
+                content: 'content',
+                status: TaskStatus.DONE,
+              },
+            ],
+          },
           mockUser2,
         ),
       ).rejects.toThrow(NotFoundException);
@@ -159,7 +177,16 @@ describe('TasksService', () => {
       jest.spyOn(taskRepository, 'save').mockImplementation(() => []);
       await expect(
         tasksService.updateStatus(
-          [{ id: 'hoge', status: TaskStatus.COMPLETED }],
+          {
+            updateTasks: [
+              {
+                id: 'hoge',
+                title: 'title',
+                content: 'content',
+                status: TaskStatus.DONE,
+              },
+            ],
+          },
           mockUser1,
         ),
       ).rejects.toThrow(NotFoundException);
@@ -188,15 +215,6 @@ describe('TasksService', () => {
         .mockImplementation(async () => deleteResponse);
       await tasksService.delete('hoge', mockUser1);
       expect(spy).toHaveBeenCalled();
-    });
-
-    it('異常系: 他人のタスクを削除', async () => {
-      jest
-        .spyOn(taskRepository, 'findOneBy')
-        .mockImplementation(async () => mockTask);
-      await expect(tasksService.delete('hoge', mockUser2)).rejects.toThrow(
-        BadRequestException,
-      );
     });
 
     it('異常系: タスクの削除に失敗', async () => {

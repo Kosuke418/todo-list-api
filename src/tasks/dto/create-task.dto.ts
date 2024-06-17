@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CreateTaskDto {
   @ApiProperty({
@@ -16,7 +16,9 @@ export class CreateTaskDto {
     example: '一時間以上の筋トレを行う',
     type: String,
     maxLength: 255,
+    required: false,
   })
+  @IsOptional()
   @IsString()
   @MaxLength(255)
   content: string;
