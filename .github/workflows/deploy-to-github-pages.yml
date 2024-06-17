@@ -3,7 +3,6 @@ name: Deploy Swagger and SchemaSpy to GitHub Pages
 on:
   push:
     branches:
-      - develop
       - master
 
 env:
@@ -36,12 +35,16 @@ jobs:
     steps:
       - name: Chekcout code
         uses: actions/checkout@v4
+
       - name: Install Dependencies
         run: yarn --frozen-lockfile
+
       - name: Db migrations
         run: yarn migration:run
+
       - name: Make schemaspy dir
         run: mkdir -p docs/schema
+
       - name: Run SchemaSpy
         uses: tj-actions/schemaspy@v2
         with:
@@ -56,6 +59,7 @@ jobs:
 
       - name: Build Pages
         run: yarn api:create:doc
+
       - name: Upload Documents
         uses: actions/upload-pages-artifact@v3
         with:

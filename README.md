@@ -133,6 +133,7 @@ https://kosuke418.github.io/todo-list-api/
 - ログの設計と実装
 - DBのユーザ追加
 - テストデータ投入スクリプト
+- リファクタリング
 
 ## License
 
