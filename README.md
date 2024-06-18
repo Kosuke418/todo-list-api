@@ -1,38 +1,123 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# TODO API with NestJS
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 概要
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+NestJSを使用して作成したシンプルなToDoアプリのAPIです。
+タスクを作成、検索、更新、および削除することができます。
 
-## Description
+## インストール方法
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### 前提条件
 
-## Installation
+- Node.js (バージョン22)
+- yarn (1.22.22)
+- docker
+
+### 動作確認
+
+1. リポジトリをクローン
+
+   ```bash
+   git clone https://github.com/Kosuke418/todo-list-api.git
+   cd todo-api-nestjs
+   ```
+
+1. 必要なパッケージをインストール
+
+   ```bash
+   yarn install
+   ```
+
+1. 環境変数を設定。`.env.example`ファイルをコピーして`.env`ファイルを作成
+
+   ```bash
+   cp .env.example .env
+   ```
+
+1. DBの起動
+
+   ```bash
+   docker-compose up -d
+   ```
+
+1. DBの起動確認（phpmyadminを利用し、データベース内を確認）
+
+   ```bash
+   http://localhost:8888/
+   ```
+
+1. マイグレーション
+
+   ```bash
+   yarn migration:run
+   ```
+
+1. インストール
+
+   ```bash
+   yarn install
+   ```
+
+1. アプリケーションを起動
+
+   ```bash
+   yarn start:dev
+   ```
+
+1. 以下に接続し、"Hello World!"が表示されれば成功
+
+   ```bash
+   http://localhost:3000/api/health
+   ```
+
+## 使い方
+
+### エンドポイント
+
+- **POST api/signup**: ユーザの作成
+- **POST api/signin**: ユーザの認証（JWTを取得）
+- **GET api/tasks**: すべてのタスクを取得
+- **GET api/tasks/:id**: 指定したIDのタスクを取得
+- **POST api/tasks**: 新しいタスクを作成
+- **PATCH api/tasks**: タスクを更新
+- **DELETE api/tasks/:id**: 指定したIDのタスクを削除
+
+### サンプルリクエスト
+
+ユーザの作成後、ユーザの認証のAPIを実行することでJWTを取得
+
+取得したJWTをヘッダーのAuthorizationに指定することでユーザごとのタスク制御を行える
+
+#### GET api/tasks
+
+```bash
+curl -X GET http://localhost:3000/api/tasks -H "Authorization: Bearer xxx"
+```
+
+#### POST api/tasks
+
+```bash
+curl -X POST http://localhost:3000/api/tasks -H "Authorization: Bearer xxx" -H "Content-Type: application/json" -d '{
+  "title": "新しいToDo",
+  "common": "これは新しいToDo項目です"
+}'
+```
+
+### ドキュメント
+
+API仕様書、DB仕様書（masterブランチpush時にGithubActionにて自動生成）
+
+https://kosuke418.github.io/todo-list-api/
+
+## コマンド
+
+### Installation
 
 ```bash
 $ yarn install
 ```
 
-## Running the app
+### Running the app
 
 ```bash
 # development
@@ -45,7 +130,7 @@ $ yarn start:dev
 $ yarn start:prod
 ```
 
-## Test
+### Test
 
 ```bash
 # unit tests
@@ -58,7 +143,7 @@ $ yarn test:e2e
 $ yarn test:cov
 ```
 
-## Databese
+### Databese
 
 ```bash
 # create db
@@ -74,67 +159,8 @@ $ yarn migration:run
 $ migration:revert
 ```
 
-## 動作確認方法
+## 参考資料
 
-ローカル環境にnode、yarnのインストールをしてください
-
-下記バージョンで動作確認済み
-
-```
-yarn： v1.22.22
-node： v22.2.0
-```
-
-下記の順番でコマンドを実行してください
-
-```bash
-# 1 create .env
-$ cp .env.sample .env
-
-# 2 create db
-$ docker-compose up -d
-
-# 3 db migration
-$ yarn migration:run
-
-# 4 install
-$ yarn install
-
-# 5 start
-$ yarn start:dev
-```
-
-以下に接続し、"Hello World!"が表示されれば成功
-
-http://localhost:3000/api/health
-
-## ドキュメント
-
-API仕様書、DB仕様書（masterブランチpush時にGithubActionにて自動生成）
-
-https://kosuke418.github.io/todo-list-api/
-
-## やったこと
-
-- 検索、登録、更新、削除のAPIの実装
-- DB仕様書の作成（GithubActionにて自動生成）
-- API仕様書の作成（GithubActionにて自動生成）
-- ユーザごとでタスクを制御し、認証/認可を行える
-- PR時の自動テスト
-- テストコードの実装
-
-## やりたいこと
-
-- アーキテクチャドキュメントの拡充
-- AWSへのデプロイ機能（サーバーレス）
-- 本番環境でのマイグレーションの仕組み
-- タスクのカテゴリと期日の追加
-- ChatGPTを利用してTODOを提案するAPI
-- ログの設計と実装
-- DBのユーザ追加
-- テストデータ投入スクリプト
-- リファクタリング
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+- [NestJS Documentation](https://docs.nestjs.com/)
+- [TypeORM Documentation](https://typeorm.io/)
+- [Swagger Documentation](https://swagger.io/docs/)
