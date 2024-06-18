@@ -8,9 +8,6 @@ export class UserResponseDto {
     type: String,
     maxLength: 255,
   })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(255)
   @Expose()
   username: string;
 }

@@ -5,6 +5,7 @@ import { CredentialsDto } from './dto/credentials.dto';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
+  ApiUnauthorizedResponse,
   ApiInternalServerErrorResponse,
   ApiOkResponse,
   ApiOperation,
@@ -15,7 +16,8 @@ import { UserResponseDto } from './dto/user-response.dto';
 import {
   BadRequestResponseDto,
   InternalServerErrorResponseDto,
-} from '../util/dto/response.dto';
+  UnauthorizedResponseDto,
+} from '../common/dto/response.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -47,6 +49,10 @@ export class AuthController {
   @ApiBadRequestResponse({
     description: '入力値のフォーマットエラー',
     type: BadRequestResponseDto,
+  })
+  @ApiUnauthorizedResponse({
+    description: '認証エラー',
+    type: UnauthorizedResponseDto,
   })
   @ApiInternalServerErrorResponse({
     description: 'DBサーバ接続エラー',

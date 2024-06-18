@@ -1,13 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEnum,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  IsUUID,
-  MaxLength,
-} from 'class-validator';
-import { IsUndefinedable } from '../../util/decorator/undefinedable.decorator';
 import { TaskStatus } from '../task-status.enum';
 import { Expose } from 'class-transformer';
 
@@ -16,8 +7,6 @@ export class TaskResponseDto {
     example: 'e6c015b3-cca1-4cca-970e-f0af96bf3727',
     type: String,
   })
-  @IsUUID()
-  @IsNotEmpty()
   @Expose()
   id: string;
 
@@ -27,10 +16,6 @@ export class TaskResponseDto {
     maxLength: 255,
     required: false,
   })
-  @IsUndefinedable()
-  @IsNotEmpty()
-  @IsString()
-  @MaxLength(255)
   @Expose()
   title: string;
 
@@ -40,9 +25,6 @@ export class TaskResponseDto {
     maxLength: 255,
     required: false,
   })
-  @IsOptional()
-  @IsString()
-  @MaxLength(255)
   @Expose()
   content: string;
 
@@ -51,8 +33,33 @@ export class TaskResponseDto {
     type: String,
     required: false,
   })
-  @IsUndefinedable()
-  @IsEnum(TaskStatus)
   @Expose()
   status: TaskStatus;
+
+  @ApiProperty({
+    example: '2024-06-17T19:00:38.022Z',
+    type: Date,
+    required: false,
+  })
+  @Expose()
+  createdAt: Date;
+
+  @ApiProperty({
+    example: '2024-06-17T19:00:38.022Z',
+    type: Date,
+    required: false,
+  })
+  @Expose()
+  updatedAt: Date;
+}
+
+export class TaskResponseListDto {
+  @ApiProperty({ type: [TaskResponseDto] })
+  tasks: TaskResponseDto[];
+
+  @ApiProperty({
+    example: '20',
+    type: Number,
+  })
+  total?: number;
 }

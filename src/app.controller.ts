@@ -8,7 +8,7 @@ export class AppController {
   @ApiOkResponse({
     description: '成功',
   })
-  @Get('/healthcheck')
+  @Get('/health')
   healthCheck() {
     return 'Hello World!';
   }
