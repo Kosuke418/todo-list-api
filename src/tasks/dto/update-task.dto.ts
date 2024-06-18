@@ -1,19 +1,16 @@
 import {
-  IsArray,
   IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsUUID,
   MaxLength,
-  ValidateNested,
 } from 'class-validator';
 import { TaskStatus } from '../task-status.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsUndefinedable } from '../../util/decorator/undefinedable.decorator';
+import { IsUndefinedable } from '../../common/decorator/undefinedable.decorator';
 
-export class UpdateTask {
+export class UpdateTaskDto {
   @ApiProperty({
     example: 'e6c015b3-cca1-4cca-970e-f0af96bf3727',
     type: String,
@@ -32,7 +29,7 @@ export class UpdateTask {
   @IsNotEmpty()
   @IsString()
   @MaxLength(255)
-  title: string;
+  title?: string;
 
   @ApiProperty({
     example: '一時間以上の筋トレを行う',
@@ -43,7 +40,7 @@ export class UpdateTask {
   @IsOptional()
   @IsString()
   @MaxLength(255)
-  content: string;
+  content?: string;
 
   @ApiProperty({
     example: 'DONE',
@@ -52,12 +49,5 @@ export class UpdateTask {
   })
   @IsUndefinedable()
   @IsEnum(TaskStatus)
-  status: TaskStatus;
-}
-
-export class UpdateTaskListDto {
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => UpdateTask)
-  updateTasks: UpdateTask[];
+  status?: TaskStatus;
 }

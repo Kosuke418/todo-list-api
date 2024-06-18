@@ -8,11 +8,12 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
-import { UpdateTask, UpdateTaskListDto } from './dto/update-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { GetUser } from '../auth/decorator/get-user.decorator';
@@ -34,8 +35,10 @@ import {
   InternalServerErrorResponseDto,
   NotFoundResponseDto,
   UnauthorizedResponseDto,
-} from '../util/dto/response.dto';
-import { TaskResponseDto } from './dto/task-response.dto';
+} from '../common/dto/response.dto';
+import { TaskResponseDto, TaskResponseListDto } from './dto/task-response.dto';
+import { FindAllTaskQueryDto } from './dto/findall-task-query';
+import { FindTaskQueryDto } from './dto/find-task-query';
 
 @ApiBearerAuth()
 @ApiTags('tasks')
@@ -47,7 +50,7 @@ export class TasksController {
   @ApiOperation({ summary: 'タスク一覧取得' })
   @ApiOkResponse({
     description: 'タスク一覧取得完了',
-    type: [TaskResponseDto],
+    type: TaskResponseListDto,
   })
   @ApiBadRequestResponse({
     description: '入力値のフォーマットエラー',
@@ -62,8 +65,11 @@ export class TasksController {
     type: InternalServerErrorResponseDto,
   })
   @Get()
-  async findAll(@GetUser() user: User): Promise<TaskResponseDto[]> {
-    return await this.tasksService.findAll(user);
+  async findAll(
+    @GetUser() user: User,
+    @Query() findAllTaskQueryDto: FindAllTaskQueryDto,
+  ): Promise<TaskResponseListDto> {
+    return await this.tasksService.findAll(user, findAllTaskQueryDto);
   }
 
   @ApiOperation({ summary: 'タスク詳細取得' })
@@ -91,8 +97,9 @@ export class TasksController {
   async findById(
     @Param('id', ParseUUIDPipe) id: string,
     @GetUser() user: User,
+    @Query() findTaskQueryDto: FindTaskQueryDto,
   ): Promise<TaskResponseDto> {
-    return await this.tasksService.findById(id, user);
+    return await this.tasksService.findById(id, user, findTaskQueryDto);
   }
 
   @ApiOperation({ summary: 'タスク登録' })
@@ -123,10 +130,10 @@ export class TasksController {
   @ApiOperation({
     summary: 'タスク更新',
   })
-  @ApiBody({ type: [UpdateTask] })
+  @ApiBody({ type: UpdateTaskDto })
   @ApiOkResponse({
     description: 'タスク更新完了',
-    type: [TaskResponseDto],
+    type: TaskResponseDto,
   })
   @ApiBadRequestResponse({
     description: '入力値のフォーマットエラー',
@@ -146,10 +153,10 @@ export class TasksController {
   })
   @Patch()
   async updateStatus(
-    @Body() updateTaskListDto: UpdateTaskListDto,
+    @Body() updateTaskDto: UpdateTaskDto,
     @GetUser() user: User,
-  ): Promise<TaskResponseDto[]> {
-    return await this.tasksService.updateStatus(updateTaskListDto, user);
+  ): Promise<TaskResponseDto> {
+    return await this.tasksService.updateStatus(updateTaskDto, user);
   }
 
   @ApiOperation({ summary: 'タスク削除' })
@@ -163,6 +170,10 @@ export class TasksController {
   @ApiUnauthorizedResponse({
     description: '認証エラー',
     type: UnauthorizedResponseDto,
+  })
+  @ApiNotFoundResponse({
+    description: 'タスクが存在しないまたは別のユーザのタスクエラー',
+    type: NotFoundResponseDto,
   })
   @ApiInternalServerErrorResponse({
     description: 'DBサーバ接続エラー',

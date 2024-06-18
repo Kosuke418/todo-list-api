@@ -18,12 +18,11 @@ describe('AppController (e2e)', () => {
 
   it('/ (GET)', () => {
     return request(app.getHttpServer())
-      .get('/healthcheck')
+      .get('/health')
       .expect(200)
       .expect('Hello World!');
   });
 
-  // テストで起動したNestアプリを終了しないとJestで警告が発生するため、以下のコードで終了
   afterEach(async () => {
     await app.close();
     await moduleFixture.close();

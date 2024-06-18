@@ -5,7 +5,10 @@ import { TaskStatus } from './task-status.enum';
 import { NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Task } from '../db/entities/task.entity';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { TaskResponseDto, TaskResponseListDto } from './dto/task-response.dto';
+import { FindAllTaskQueryDto } from './dto/findall-task-query';
+import { FindTaskQueryDto } from './dto/find-task-query';
 
 const mockUser1: User = {
   id: '1',
@@ -27,7 +30,7 @@ const mockUser2: User = {
 
 describe('TasksService', () => {
   let tasksService: TasksService;
-  let taskRepository;
+  let taskRepository: Repository<Task>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -48,62 +51,77 @@ describe('TasksService', () => {
 
   describe('findAll', () => {
     it('正常系', async () => {
-      const expected: Task[] = [];
-      jest
-        .spyOn(taskRepository, 'findBy')
-        .mockImplementation(async () => expected);
-      const result = await tasksService.findAll(mockUser1);
+      const tasks: Task[] = [];
+      const expected: TaskResponseListDto = {
+        tasks,
+        total: 0,
+      };
+      const query: FindAllTaskQueryDto = { limit: 10 };
+      jest.spyOn(taskRepository, 'find').mockImplementation(async () => tasks);
+      const result = await tasksService.findAll(mockUser1, query);
 
       expect(result).toEqual(expected);
     });
   });
 
   describe('findById', () => {
+    const query: FindTaskQueryDto = {};
     it('正常系', async () => {
-      const expected = {
+      const expected: TaskResponseDto = {
         id: 'hoge',
         title: 'hogehoge',
         content: 'hoge',
         status: TaskStatus.NEW,
-        createdAt: '',
-        updatedAt: '',
-        userId: mockUser1.id,
-        user: mockUser1,
+        createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+        updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
       };
+
+      const task = new Task();
+      task.id = 'hoge';
+      task.title = 'hogehoge';
+      task.content = 'hoge';
+      task.status = TaskStatus.NEW;
+      task.createdAt = new Date(2022, 5 - 1, 5, 6, 35, 20, 333);
+      task.updatedAt = new Date(2022, 5 - 1, 5, 6, 35, 20, 333);
+
       jest
-        .spyOn(taskRepository, 'findOneBy')
-        .mockImplementation(async () => expected);
-      const result = await tasksService.findById('hoge', mockUser1);
+        .spyOn(taskRepository, 'findOne')
+        .mockImplementation(async () => task);
+      const result = await tasksService.findById('hoge', mockUser1, query);
       expect(result).toEqual(expected);
     });
 
     it('異常系: タスクが存在しない', async () => {
       jest
-        .spyOn(taskRepository, 'findOneBy')
+        .spyOn(taskRepository, 'findOne')
         .mockImplementation(async () => null);
-      await expect(tasksService.findById('hoge', mockUser1)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        tasksService.findById('hoge', mockUser1, query),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('create', () => {
     it('正常系', async () => {
-      const expected = {
+      const expected: TaskResponseDto = {
         id: 'hoge',
         title: 'hogehoge',
         content: 'hoge',
         status: TaskStatus.NEW,
-        createdAt: '',
-        updatedAt: '',
-        userId: mockUser1.id,
-        user: mockUser1,
+        createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+        updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
       };
 
-      jest
-        .spyOn(taskRepository, 'create')
-        .mockImplementation(async () => expected);
-      jest.spyOn(taskRepository, 'save').mockImplementation(async () => []);
+      const task = new Task();
+      task.id = 'hoge';
+      task.title = 'hogehoge';
+      task.content = 'hoge';
+      task.status = TaskStatus.NEW;
+      task.createdAt = new Date(2022, 5 - 1, 5, 6, 35, 20, 333);
+      task.updatedAt = new Date(2022, 5 - 1, 5, 6, 35, 20, 333);
+
+      jest.spyOn(taskRepository, 'create').mockImplementation(() => task);
+      jest.spyOn(taskRepository, 'save').mockImplementation(async () => task);
       const result = await tasksService.create(
         {
           title: 'hogehoge',
@@ -116,54 +134,44 @@ describe('TasksService', () => {
   });
 
   describe('updateStatus', () => {
-    const mockTask = {
-      id: 'hoge',
-      title: 'hogehoge',
-      content: 'hoge',
-      status: TaskStatus.NEW,
-      createdAt: '',
-      updatedAt: '',
-      userId: mockUser1.id,
-      user: mockUser1,
-    };
+    const task = new Task();
+    task.id = 'hoge';
+    task.title = 'hogehoge';
+    task.content = 'hoge';
+    task.status = TaskStatus.NEW;
+    const updateResponse = new UpdateResult();
+    updateResponse.affected = 1;
+
     it('正常系', async () => {
       jest
         .spyOn(taskRepository, 'findOneBy')
-        .mockImplementation(async () => mockTask);
+        .mockImplementation(async () => task);
       const spy = jest
-        .spyOn(taskRepository, 'save')
-        .mockImplementation(() => mockTask);
+        .spyOn(taskRepository, 'update')
+        .mockImplementation(async () => updateResponse);
       await tasksService.updateStatus(
         {
-          updateTasks: [
-            {
-              id: 'hoge',
-              title: 'title',
-              content: 'content',
-              status: TaskStatus.DONE,
-            },
-          ],
+          id: 'hoge',
+          title: 'title',
+          content: 'content',
+          status: TaskStatus.DONE,
         },
         mockUser1,
       );
       expect(spy).toHaveBeenCalled();
     });
 
-    it('異常系: 他者のタスクを変更', async () => {
+    it('異常系: 他者のタスクを変更またはタスクが存在しない', async () => {
       jest
         .spyOn(taskRepository, 'findOneBy')
-        .mockImplementation(async () => {});
+        .mockImplementation(async () => null);
       await expect(
         tasksService.updateStatus(
           {
-            updateTasks: [
-              {
-                id: 'hoge',
-                title: 'title',
-                content: 'content',
-                status: TaskStatus.DONE,
-              },
-            ],
+            id: 'hoge',
+            title: 'title',
+            content: 'content',
+            status: TaskStatus.DONE,
           },
           mockUser2,
         ),
@@ -171,21 +179,24 @@ describe('TasksService', () => {
     });
 
     it('異常系: タスクの更新に失敗', async () => {
+      const tasks: Task[] = [];
+      const task = tasks[0];
+      const updateResponse = new UpdateResult();
+      updateResponse.affected = 0;
+
       jest
         .spyOn(taskRepository, 'findOneBy')
-        .mockImplementation(async () => mockTask);
-      jest.spyOn(taskRepository, 'save').mockImplementation(() => []);
+        .mockImplementation(async () => task);
+      jest
+        .spyOn(taskRepository, 'update')
+        .mockImplementation(async () => updateResponse);
       await expect(
         tasksService.updateStatus(
           {
-            updateTasks: [
-              {
-                id: 'hoge',
-                title: 'title',
-                content: 'content',
-                status: TaskStatus.DONE,
-              },
-            ],
+            id: 'hoge',
+            title: 'title',
+            content: 'content',
+            status: TaskStatus.DONE,
           },
           mockUser1,
         ),
@@ -194,22 +205,20 @@ describe('TasksService', () => {
   });
 
   describe('delete', () => {
-    const mockTask = {
-      id: 'hoge',
-      title: 'hogehoge',
-      content: 'hoge',
-      status: TaskStatus.NEW,
-      createdAt: '',
-      updatedAt: '',
-      userId: mockUser1.id,
-      user: mockUser1,
-    };
+    const task = new Task();
+    task.id = 'hoge';
+    task.title = 'hogehoge';
+    task.content = 'hoge';
+    task.status = TaskStatus.NEW;
+
     it('正常系', async () => {
       jest
         .spyOn(taskRepository, 'findOneBy')
-        .mockImplementation(async () => mockTask);
+        .mockImplementation(async () => task);
 
-      const deleteResponse = { affected: 1 };
+      const deleteResponse = new DeleteResult();
+      deleteResponse.affected = 1;
+
       const spy = jest
         .spyOn(taskRepository, 'delete')
         .mockImplementation(async () => deleteResponse);
@@ -220,9 +229,11 @@ describe('TasksService', () => {
     it('異常系: タスクの削除に失敗', async () => {
       jest
         .spyOn(taskRepository, 'findOneBy')
-        .mockImplementation(async () => mockTask);
+        .mockImplementation(async () => task);
 
-      const deleteResponse = { affected: 0 };
+      const deleteResponse = new DeleteResult();
+      deleteResponse.affected = 0;
+
       jest
         .spyOn(taskRepository, 'delete')
         .mockImplementation(async () => deleteResponse);

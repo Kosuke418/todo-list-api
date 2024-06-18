@@ -1,13 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Task } from '../db/entities/task.entity';
-import { UpdateTaskListDto } from './dto/update-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { User } from '../db/entities/user.entity';
 import { Repository } from 'typeorm';
 import { TaskStatus } from './task-status.enum';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TaskResponseDto } from './dto/task-response.dto';
+import { TaskResponseDto, TaskResponseListDto } from './dto/task-response.dto';
 import { plainToInstance } from 'class-transformer';
+import { FindAllTaskQueryDto } from './dto/findall-task-query';
+import { FindTaskQueryDto } from './dto/find-task-query';
+import { convertFieldsToSelect } from '../common/util/convert-fields-to-select';
 
 @Injectable()
 export class TasksService {
@@ -15,15 +18,40 @@ export class TasksService {
     @InjectRepository(Task) private readonly taskRepository: Repository<Task>,
   ) {}
 
-  async findAll(user: User): Promise<TaskResponseDto[]> {
-    const task = await this.taskRepository.findBy({ userId: user.id });
-    return plainToInstance(TaskResponseDto, task, {
+  async findAll(
+    user: User,
+    findAllTaskQueryDto: FindAllTaskQueryDto,
+  ): Promise<TaskResponseListDto> {
+    const { limit, offset, fields } = findAllTaskQueryDto;
+
+    const tasks = await this.taskRepository.find({
+      select: convertFieldsToSelect(fields),
+      where: { userId: user.id },
+      take: limit,
+      skip: offset,
+    });
+    const taskResponseDto = plainToInstance(TaskResponseDto, tasks, {
       excludeExtraneousValues: true,
     });
+    const response: TaskResponseListDto = {
+      tasks: taskResponseDto,
+      total: taskResponseDto.length,
+    };
+
+    return response;
   }
 
-  async findById(id: string, user: User): Promise<TaskResponseDto> {
-    const task = await this.taskRepository.findOneBy({ id, userId: user.id });
+  async findById(
+    id: string,
+    user: User,
+    findTaskQueryDto: FindTaskQueryDto,
+  ): Promise<TaskResponseDto> {
+    const { fields } = findTaskQueryDto;
+
+    const task = await this.taskRepository.findOne({
+      select: convertFieldsToSelect(fields),
+      where: { id, userId: user.id },
+    });
     if (!task) {
       throw new NotFoundException('タスクが存在しません');
     }
@@ -52,45 +80,51 @@ export class TasksService {
   }
 
   async updateStatus(
-    updateTaskListDto: UpdateTaskListDto,
+    updateTaskDto: UpdateTaskDto,
     user: User,
-  ): Promise<TaskResponseDto[]> {
-    let task: TaskResponseDto[] = [];
-    for (let i: number = 0; i < updateTaskListDto.updateTasks.length; i++) {
-      const updateTask = updateTaskListDto.updateTasks[i];
-      const targetTask = await this.taskRepository.findOneBy({
-        id: updateTask.id,
-        userId: user.id,
-      });
-      if (!targetTask) {
-        throw new NotFoundException(
-          `id:${updateTask.id} は存在しないか、別のユーザのデータです`,
-        );
-      }
-
-      // レスポンスとして更新後の内容を返したいので、undefinedの場合は内容を入れ替えずにおく
-      targetTask.title =
-        updateTask.title !== undefined ? updateTask.title : targetTask.title;
-      targetTask.content =
-        updateTask.content !== undefined
-          ? updateTask.content
-          : targetTask.content;
-      targetTask.status =
-        updateTask.status !== undefined ? updateTask.status : targetTask.status;
-
-      task.push(targetTask);
+  ): Promise<TaskResponseDto> {
+    // 更新後のタスクの状態をレスポンスで返すために一度取得
+    const targetTask = await this.taskRepository.findOneBy({
+      id: updateTaskDto.id,
+      userId: user.id,
+    });
+    if (!targetTask) {
+      throw new NotFoundException(
+        `id:${updateTaskDto.id} は存在しないか、別のユーザのタスクです`,
+      );
     }
-    const updatedTask = await this.taskRepository.save(task);
-    if (updatedTask.length === 0) {
-      throw new NotFoundException('データを更新できませんでした');
+
+    // undefinedの場合はレスポンスの内容を入れ替えずにおく
+    targetTask.title =
+      updateTaskDto.title !== undefined
+        ? updateTaskDto.title
+        : targetTask.title;
+    targetTask.content =
+      updateTaskDto.content !== undefined
+        ? updateTaskDto.content
+        : targetTask.content;
+    targetTask.status =
+      updateTaskDto.status !== undefined
+        ? updateTaskDto.status
+        : targetTask.status;
+
+    const updatedResponse = await this.taskRepository.update(
+      updateTaskDto.id,
+      updateTaskDto,
+    );
+    if (updatedResponse.affected === 0) {
+      throw new NotFoundException('タスクを更新できませんでした');
     }
-    return task;
+
+    return plainToInstance(TaskResponseDto, targetTask, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async delete(id: string, user: User): Promise<void> {
     const response = await this.taskRepository.delete({ id, userId: user.id });
-    if (response.affected !== 1) {
-      throw new NotFoundException(`${id}のデータを削除できませんでした`);
+    if (response.affected === 0) {
+      throw new NotFoundException(`id:${id} のタスクを削除できませんでした`);
     }
   }
 }
