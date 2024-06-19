@@ -1,13 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class UserResponseDto {
   @ApiProperty({
-    example: 'abc123',
+    example: 'abc123@example.com',
     type: String,
     maxLength: 255,
   })
   @Expose()
-  username: string;
+  email: string;
 }

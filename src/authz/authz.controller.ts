@@ -1,6 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { AuthzService } from './authz.service';
 import { CredentialsDto } from './dto/credentials.dto';
 import {
   ApiBadRequestResponse,
@@ -19,10 +18,10 @@ import {
   UnauthorizedResponseDto,
 } from '../common/dto/response.dto';
 
-@ApiTags('auth')
-@Controller('auth')
-export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+@ApiTags('authz')
+@Controller('authz')
+export class AuthzController {
+  constructor(private readonly authzService: AuthzService) {}
   @ApiOperation({ summary: 'ユーザ登録' })
   @ApiCreatedResponse({
     description: 'ユーザ登録完了',
@@ -37,8 +36,10 @@ export class AuthController {
     type: InternalServerErrorResponseDto,
   })
   @Post('signup')
-  async signUp(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
-    return await this.authService.signUp(createUserDto);
+  async signUp(
+    @Body() credentialsDto: CredentialsDto,
+  ): Promise<UserResponseDto> {
+    return await this.authzService.registerUser(credentialsDto);
   }
 
   @ApiOperation({ summary: 'ユーザ認証' })
@@ -61,7 +62,7 @@ export class AuthController {
   @Post('signin')
   async singIn(
     @Body() credentialsDto: CredentialsDto,
-  ): Promise<{ accessToken: string }> {
-    return await this.authService.signIn(credentialsDto);
+  ): Promise<AccessTokenDto> {
+    return await this.authzService.getToken(credentialsDto);
   }
 }

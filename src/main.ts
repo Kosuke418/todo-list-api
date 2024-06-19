@@ -4,16 +4,22 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import * as fs from 'fs';
+import { ContentTypeMiddleware } from './common/middleware/content-type.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(new ContentTypeMiddleware().use);
   app.useGlobalPipes(new ValidationPipe());
 
   // APIのURIをすべて/apiから始まるようにする
   app.setGlobalPrefix('api');
 
   // CORS対応
-  app.enableCors();
+  app.enableCors({
+    origin: '*',
+    allowedHeaders:
+      'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+  });
 
   // Swagger拡張の有効化
   const options = new DocumentBuilder()

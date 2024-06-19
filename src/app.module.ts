@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TasksModule } from './tasks/tasks.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 import { TypeOrmConfigService } from './db/database.config';
 import { AppController } from './app.controller';
+import { AuthzModule } from './authz/authz.module';
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { AppController } from './app.controller';
       useClass: TypeOrmConfigService,
     }),
     TasksModule,
-    AuthModule,
+    AuthzModule,
   ],
   controllers: [AppController],
 })

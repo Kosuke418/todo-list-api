@@ -15,9 +15,8 @@ import {
 import { TasksService } from './tasks.service';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { GetUser } from '../auth/decorator/get-user.decorator';
-import { User } from '../db/entities/user.entity';
+import { JwtAuthGuard } from '../authz/guards/jwt-auth.guard';
+import { GetUser } from '../authz/decorator/get-user.decorator';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -66,10 +65,10 @@ export class TasksController {
   })
   @Get()
   async findAll(
-    @GetUser() user: User,
+    @GetUser() userId: string,
     @Query() findAllTaskQueryDto: FindAllTaskQueryDto,
   ): Promise<TaskResponseListDto> {
-    return await this.tasksService.findAll(user, findAllTaskQueryDto);
+    return await this.tasksService.findAll(userId, findAllTaskQueryDto);
   }
 
   @ApiOperation({ summary: 'タスク詳細取得' })
@@ -96,10 +95,10 @@ export class TasksController {
   @Get(':id')
   async findById(
     @Param('id', ParseUUIDPipe) id: string,
-    @GetUser() user: User,
+    @GetUser() userId: string,
     @Query() findTaskQueryDto: FindTaskQueryDto,
   ): Promise<TaskResponseDto> {
-    return await this.tasksService.findById(id, user, findTaskQueryDto);
+    return await this.tasksService.findById(id, userId, findTaskQueryDto);
   }
 
   @ApiOperation({ summary: 'タスク登録' })
@@ -122,9 +121,9 @@ export class TasksController {
   @Post()
   async create(
     @Body() createTaskDto: CreateTaskDto,
-    @GetUser() user: User,
+    @GetUser() userId: string,
   ): Promise<TaskResponseDto> {
-    return await this.tasksService.create(createTaskDto, user);
+    return await this.tasksService.create(createTaskDto, userId);
   }
 
   @ApiOperation({
@@ -154,9 +153,9 @@ export class TasksController {
   @Patch()
   async updateStatus(
     @Body() updateTaskDto: UpdateTaskDto,
-    @GetUser() user: User,
+    @GetUser() userId: string,
   ): Promise<TaskResponseDto> {
-    return await this.tasksService.updateStatus(updateTaskDto, user);
+    return await this.tasksService.updateStatus(updateTaskDto, userId);
   }
 
   @ApiOperation({ summary: 'タスク削除' })
@@ -182,8 +181,8 @@ export class TasksController {
   @Delete(':id')
   async delete(
     @Param('id', ParseUUIDPipe) id: string,
-    @GetUser() user: User,
+    @GetUser() userId: string,
   ): Promise<void> {
-    await this.tasksService.delete(id, user);
+    await this.tasksService.delete(id, userId);
   }
 }
