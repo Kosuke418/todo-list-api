@@ -21,7 +21,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
     }
     return {
       type: 'mysql',
-      host: 'todo_database',
+      host: configService.get('DATABASE_HOST'),
       port: configService.get('DATABASE_PORT'),
       username: configService.get('DATABASE_USER'),
       password: configService.get('DATABASE_PASSWORD'),

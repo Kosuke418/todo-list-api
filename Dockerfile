@@ -25,7 +25,7 @@ USER node
 # PRODUCTION BUILD
 ###################
 
-FROM node:20.0.0-slim As build
+FROM node:20.14.0-slim As build
 
 WORKDIR /usr/src/app
 
@@ -48,7 +48,7 @@ USER node
 # PRODUCTION
 ###################
 
-FROM node:20.0.0-slim
+FROM node:20.14.0-slim
 
 WORKDIR /usr/src/app
 
