@@ -9,7 +9,7 @@ NestJSを使用して作成したシンプルなToDoアプリのAPIです。
 
 ### 前提条件
 
-- Node.js (バージョン22)
+- Node.js (バージョン20.14)
 - yarn (1.22.22)
 - docker
 
