@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { Task } from './entities/task.entity';
-import { User } from './entities/user.entity';
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
@@ -13,7 +12,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       return {
         type: 'sqlite',
         database: ':memory:',
-        entities: [User, Task],
+        entities: [Task],
         dropSchema: true,
         synchronize: true,
         logging: false,
@@ -26,7 +25,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       username: configService.get('DATABASE_USER'),
       password: configService.get('DATABASE_PASSWORD'),
       database: configService.get('DATABASE_DB'),
-      entities: [User, Task],
+      entities: [Task],
       synchronize: false, // 本番環境では必ずfalse
     };
   }
