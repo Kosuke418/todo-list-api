@@ -3,12 +3,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'tasks', comment: 'タスクテーブル' })
@@ -43,13 +40,6 @@ export class Task {
   })
   @Column({ comment: 'ステータス', length: 255 })
   status: TaskStatus;
-
-  @ManyToOne(() => User, (user) => user.tasks, {
-    onDelete: 'CASCADE',
-    nullable: false,
-  })
-  @JoinColumn({ name: 'user_id' })
-  user: User;
 
   @ApiProperty({
     example: 'e6c015b3-cca1-4cca-970e-f0af96bf3727',
