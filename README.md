@@ -150,13 +150,13 @@ $ yarn test:cov
 $ docker-compose up -d
 
 # db migration
-$ migration:generate src/db/migrations/${filename}
+$ yarn migration:generate src/db/migrations/${filename}
 
 # db migration
 $ yarn migration:run
 
 # db revert
-$ migration:revert
+$ yarn migration:revert
 ```
 
 ## 参考資料

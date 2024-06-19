@@ -10,13 +10,16 @@ services:
       - ./:/usr/src/app
       - /usr/src/app/node_modules
     ports:
-      - "5000:3000"
+      - '5000:3000'
     entrypoint:
       - /usr/bin/tini
       - --
     command: yarn start:dev
     depends_on:
       - database
+    environment:
+      DATABASE_HOST: todo_database
+
   database:
     container_name: todo_database
     image: mysql:8.0.32
