@@ -3,8 +3,6 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { JwtService } from '@nestjs/jwt';
-import { MockJwtStrategy } from './mock/jwt.mock';
-import { JwtStrategy } from '../src/auth/jwt.strategy';
 import { Repository } from 'typeorm';
 import { Task } from '../src/db/entities/task.entity';
 import { TaskStatus } from '../src/tasks/task-status.enum';
@@ -13,6 +11,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../src/db/entities/user.entity';
 import { CreateTaskDto } from '../src/tasks/dto/create-task.dto';
 import { UpdateTaskDto } from '../src/tasks/dto/update-task.dto';
+import { AuthModule } from '../src/auth/auth.module';
 
 describe('TasksController (e2e)', () => {
   let app: INestApplication;
@@ -104,11 +103,8 @@ describe('TasksController (e2e)', () => {
 
   beforeAll(async () => {
     moduleFixture = await Test.createTestingModule({
-      imports: [AppModule, TasksModule],
-    })
-      .overrideProvider(JwtStrategy)
-      .useClass(MockJwtStrategy)
-      .compile();
+      imports: [AppModule, TasksModule, AuthModule],
+    }).compile();
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
@@ -142,7 +138,7 @@ describe('TasksController (e2e)', () => {
   describe('/tasks (GET)', () => {
     it('正常系：タスクが存在する', async () => {
       const token = jwtService.sign(
-        { id: mockUser1.id, username: 'hogehoge' },
+        { id: mockUser1.id, username: mockUser1.username },
         { secret: process.env.JWT_SECRET_KEY },
       );
 
@@ -172,10 +168,7 @@ describe('TasksController (e2e)', () => {
 
     it('正常系：タスクが存在しない', async () => {
       const token = jwtService.sign(
-        {
-          id: mockUser3,
-          username: 'hogehoge',
-        },
+        { id: mockUser3.id, username: mockUser3.username },
         { secret: process.env.JWT_SECRET_KEY },
       );
 
@@ -191,7 +184,7 @@ describe('TasksController (e2e)', () => {
 
     it('異常系：入力値のフォーマットエラー', async () => {
       const token = jwtService.sign(
-        { id: mockUser1.id, username: 'hogehoge' },
+        { id: mockUser1.id, username: mockUser1.username },
         { secret: process.env.JWT_SECRET_KEY },
       );
 
@@ -213,7 +206,7 @@ describe('TasksController (e2e)', () => {
   describe('/tasks/:id (GET)', () => {
     it('正常系', async () => {
       const token = jwtService.sign(
-        { id: mockUser1.id, username: 'hogehoge' },
+        { id: mockUser1.id, username: mockUser1.username },
         { secret: process.env.JWT_SECRET_KEY },
       );
 
@@ -233,10 +226,7 @@ describe('TasksController (e2e)', () => {
 
     it('異常系：入力値のフォーマットエラー', async () => {
       const token = jwtService.sign(
-        {
-          id: mockUser1,
-          username: 'hogehoge',
-        },
+        { id: mockUser1.id, username: mockUser1.username },
         { secret: process.env.JWT_SECRET_KEY },
       );
 
@@ -253,10 +243,7 @@ describe('TasksController (e2e)', () => {
 
     it('異常系：タスクが存在しない', async () => {
       const token = jwtService.sign(
-        {
-          id: mockUser3,
-          username: 'hogehoge',
-        },
+        { id: mockUser3.id, username: mockUser3.username },
         { secret: process.env.JWT_SECRET_KEY },
       );
 
@@ -280,7 +267,7 @@ describe('TasksController (e2e)', () => {
         content: 'content-3',
       };
       const token = jwtService.sign(
-        { id: mockUser4.id, username: 'hogehoge' },
+        { id: mockUser4.id, username: mockUser4.username },
         { secret: process.env.JWT_SECRET_KEY },
       );
 
@@ -312,7 +299,7 @@ describe('TasksController (e2e)', () => {
         content: 'content-3',
       };
       const token = jwtService.sign(
-        { id: mockUser4.id, username: 'hogehoge' },
+        { id: mockUser4.id, username: mockUser4.username },
         { secret: process.env.JWT_SECRET_KEY },
       );
 
@@ -337,7 +324,7 @@ describe('TasksController (e2e)', () => {
         content: 'test',
       };
       const token = jwtService.sign(
-        { id: mockUser5.id, username: 'hogehoge' },
+        { id: mockUser5.id, username: mockUser5.username },
         { secret: process.env.JWT_SECRET_KEY },
       );
 
@@ -370,7 +357,7 @@ describe('TasksController (e2e)', () => {
         content: 'test',
       };
       const token = jwtService.sign(
-        { id: mockUser4.id, username: 'hogehoge' },
+        { id: mockUser4.id, username: mockUser4.username },
         { secret: process.env.JWT_SECRET_KEY },
       );
 
@@ -396,7 +383,7 @@ describe('TasksController (e2e)', () => {
         content: 'test',
       };
       const token = jwtService.sign(
-        { id: mockUser4.id, username: 'hogehoge' },
+        { id: mockUser4.id, username: mockUser4.username },
         { secret: process.env.JWT_SECRET_KEY },
       );
 
@@ -418,7 +405,7 @@ describe('TasksController (e2e)', () => {
         content: 'test',
       };
       const token = jwtService.sign(
-        { id: mockUser4.id, username: 'hogehoge' },
+        { id: mockUser4.id, username: mockUser4.username },
         { secret: process.env.JWT_SECRET_KEY },
       );
 
@@ -439,7 +426,7 @@ describe('TasksController (e2e)', () => {
   describe('/tasks/:id (DELETE)', () => {
     it('正常系', async () => {
       const token = jwtService.sign(
-        { id: mockUser2.id, username: 'hogehoge' },
+        { id: mockUser2.id, username: mockUser2.username },
         { secret: process.env.JWT_SECRET_KEY },
       );
 
@@ -451,7 +438,7 @@ describe('TasksController (e2e)', () => {
 
     it('異常系：入力値のフォーマットエラー', async () => {
       const token = jwtService.sign(
-        { id: mockUser2.id, username: 'hogehoge' },
+        { id: mockUser2.id, username: mockUser2.username },
         { secret: process.env.JWT_SECRET_KEY },
       );
 
@@ -468,7 +455,7 @@ describe('TasksController (e2e)', () => {
 
     it('異常系：タスクが存在しない', async () => {
       const token = jwtService.sign(
-        { id: mockUser2.id, username: 'hogehoge' },
+        { id: mockUser2.id, username: mockUser2.username },
         { secret: process.env.JWT_SECRET_KEY },
       );
 
@@ -485,7 +472,7 @@ describe('TasksController (e2e)', () => {
 
     it('異常系：別のユーザのタスク', async () => {
       const token = jwtService.sign(
-        { id: mockUser4.id, username: 'hogehoge' },
+        { id: mockUser4.id, username: mockUser4.username },
         { secret: process.env.JWT_SECRET_KEY },
       );
 
