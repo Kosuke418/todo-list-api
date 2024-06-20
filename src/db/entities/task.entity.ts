@@ -1,4 +1,4 @@
-import { TaskStatus } from '../../tasks/task-status.enum';
+import { TaskStatus } from '../../tasks/types/task-status.enum';
 import {
   Column,
   CreateDateColumn,

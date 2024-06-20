@@ -1,14 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TasksService } from './tasks.service';
 import { User } from '../db/entities/user.entity';
-import { TaskStatus } from './task-status.enum';
+import { TaskStatus } from './types/task-status.enum';
 import { NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Task } from '../db/entities/task.entity';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { TaskResponseDto, TaskResponseListDto } from './dto/task-response.dto';
-import { FindAllTaskQueryDto } from './dto/findall-task-query';
-import { FindTaskQueryDto } from './dto/find-task-query';
+import { FindAllTaskQueryDto } from './dto/findall-task-query.dto';
+import { FindTaskQueryDto } from './dto/find-task-query.dto';
+import { ChatGPTService } from '../externals/chatgpt.service';
+import { ConfigService } from '@nestjs/config';
 
 const mockUser1: User = {
   id: '1',
@@ -40,6 +42,8 @@ describe('TasksService', () => {
           provide: getRepositoryToken(Task),
           useClass: Repository,
         },
+        ChatGPTService,
+        ConfigService
       ],
     }).compile();
 

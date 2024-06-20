@@ -81,6 +81,7 @@ NestJSを使用して作成したシンプルなToDoアプリのAPIです。
 - **POST api/tasks**: 新しいタスクを作成
 - **PATCH api/tasks**: タスクを更新
 - **DELETE api/tasks/:id**: 指定したIDのタスクを削除
+- **POST api/tasks/suggest**: 指定した目標を基にタスクを提案（ChatGPTを利用）
 
 ### サンプルリクエスト
 

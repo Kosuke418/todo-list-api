@@ -5,7 +5,7 @@ import { AppModule } from '../src/app.module';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import { Task } from '../src/db/entities/task.entity';
-import { TaskStatus } from '../src/tasks/task-status.enum';
+import { TaskStatus } from '../src/tasks/types/task-status.enum';
 import { TasksModule } from '../src/tasks/tasks.module';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../src/db/entities/user.entity';

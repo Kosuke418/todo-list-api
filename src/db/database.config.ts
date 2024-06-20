@@ -6,10 +6,10 @@ import { User } from './entities/user.entity';
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
+  constructor(private readonly configService: ConfigService) {}
   createTypeOrmOptions(): TypeOrmModuleOptions {
-    const configService = new ConfigService();
     // テスト時はsqliteを使用
-    if (process.env.NODE_ENV === 'test') {
+    if (this.configService.get('NODE_ENV') === 'test') {
       return {
         type: 'sqlite',
         database: ':memory:',
@@ -21,11 +21,11 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
     }
     return {
       type: 'mysql',
-      host: configService.get('DATABASE_HOST'),
-      port: configService.get('DATABASE_PORT'),
-      username: configService.get('DATABASE_USER'),
-      password: configService.get('DATABASE_PASSWORD'),
-      database: configService.get('DATABASE_DB'),
+      host: this.configService.get('DATABASE_HOST'),
+      port: this.configService.get('DATABASE_PORT'),
+      username: this.configService.get('DATABASE_USER'),
+      password: this.configService.get('DATABASE_PASSWORD'),
+      database: this.configService.get('DATABASE_DB'),
       entities: [User, Task],
       synchronize: false, // 本番環境では必ずfalse
     };

@@ -16,7 +16,7 @@ import { TasksService } from './tasks.service';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { GetUser } from '../auth/decorator/get-user.decorator';
+import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User } from '../db/entities/user.entity';
 import {
   ApiBadRequestResponse,
@@ -37,8 +37,10 @@ import {
   UnauthorizedResponseDto,
 } from '../common/dto/response.dto';
 import { TaskResponseDto, TaskResponseListDto } from './dto/task-response.dto';
-import { FindAllTaskQueryDto } from './dto/findall-task-query';
-import { FindTaskQueryDto } from './dto/find-task-query';
+import { FindAllTaskQueryDto } from './dto/findall-task-query.dto';
+import { FindTaskQueryDto } from './dto/find-task-query.dto';
+import { SuggestTaskDto } from './dto/suggest-task.dto';
+import { SuggestTaskResponseListDto } from './dto/suggest-task-response.dto';
 
 @ApiBearerAuth()
 @ApiTags('tasks')
@@ -185,5 +187,30 @@ export class TasksController {
     @GetUser() user: User,
   ): Promise<void> {
     await this.tasksService.delete(id, user);
+  }
+
+  @ApiOperation({ summary: 'タスク提案' })
+  @ApiOkResponse({
+    description: 'タスク更新完了',
+    type: SuggestTaskResponseListDto,
+  })
+  @ApiBadRequestResponse({
+    description: '入力値のフォーマットまたは生成エラー',
+    type: BadRequestResponseDto,
+  })
+  @ApiUnauthorizedResponse({
+    description: '認証エラー',
+    type: UnauthorizedResponseDto,
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'DBサーバ接続エラー',
+    type: InternalServerErrorResponseDto,
+  })
+  @Post('suggest')
+  async suggest(
+    @Body() suggestTaskDto: SuggestTaskDto,
+    @GetUser() user: User,
+  ): Promise<SuggestTaskResponseListDto> {
+    return this.tasksService.suggest(suggestTaskDto.objective, user);
   }
 }

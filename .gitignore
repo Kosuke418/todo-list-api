@@ -57,4 +57,4 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # docs
 /api/*
-/docs/*
+/docs/api_specification.html

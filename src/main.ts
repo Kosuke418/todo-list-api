@@ -4,9 +4,11 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import * as fs from 'fs';
+import { ContentTypeMiddleware } from './common/middlewares/content-type.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(new ContentTypeMiddleware().use);
   app.useGlobalPipes(new ValidationPipe());
 
   // APIのURIをすべて/apiから始まるようにする

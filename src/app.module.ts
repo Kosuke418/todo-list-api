@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 import { TypeOrmConfigService } from './db/database.config';
 import { AppController } from './app.controller';
+import { ExternalsModule } from './externals/externals.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AppController } from './app.controller';
     }),
     TasksModule,
     AuthModule,
+    ExternalsModule,
   ],
   controllers: [AppController],
 })

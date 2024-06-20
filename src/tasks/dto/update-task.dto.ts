@@ -6,9 +6,9 @@ import {
   IsUUID,
   MaxLength,
 } from 'class-validator';
-import { TaskStatus } from '../task-status.enum';
+import { TaskStatus } from '../types/task-status.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsUndefinedable } from '../../common/decorator/undefinedable.decorator';
+import { IsUndefinedable } from '../../common/decorators/undefinedable.decorator';
 
 export class UpdateTaskDto {
   @ApiProperty({

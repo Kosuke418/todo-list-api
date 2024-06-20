@@ -1,7 +1,7 @@
 import { IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsValidFields } from '../../common/decorator/valid-fields.decorator';
+import { IsValidFields } from '../../common/decorators/valid-fields.decorator';
 import { Task } from '../../db/entities/task.entity';
 
 export class FindTaskQueryDto {
