@@ -43,7 +43,7 @@ describe('TasksService', () => {
           useClass: Repository,
         },
         ChatGPTService,
-        ConfigService
+        ConfigService,
       ],
     }).compile();
 

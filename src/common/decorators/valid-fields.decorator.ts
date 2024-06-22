@@ -5,7 +5,7 @@ export function IsValidFields<T>(
   entityClass: ObjectType<T>,
   validationOptions?: ValidationOptions,
 ) {
-  return function (object: Object, propertyName: string) {
+  return function (object: object, propertyName: string) {
     registerDecorator({
       name: 'isValidFields',
       target: object.constructor,

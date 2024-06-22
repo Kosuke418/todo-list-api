@@ -12,7 +12,7 @@ RUN apt-get update && apt-get -qq install -y --no-install-recommends \
 
 ENV NODE_ENV development
 
-COPY --chown=node:node package*.json ./
+COPY --chown=node:node package.json ./
 
 RUN yarn --frozen-lockfile
 
@@ -31,7 +31,7 @@ WORKDIR /usr/src/app
 
 ENV NODE_ENV production
 
-COPY --chown=node:node package*.json ./
+COPY --chown=node:node package.json ./
 
 COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
 
@@ -39,7 +39,7 @@ COPY --chown=node:node . .
 
 RUN yarn build
 
-RUN yarn --frozen-lockfile --omit=dev && npm cache clean --force
+RUN yarn --frozen-lockfile --production && yarn cache clean
 
 USER node
 

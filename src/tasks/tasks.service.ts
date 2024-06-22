@@ -17,7 +17,6 @@ import { FindTaskQueryDto } from './dto/find-task-query.dto';
 import { convertFieldsToSelect } from '../common/utils/convert-fields-to-select';
 import { ChatGPTService } from '../externals/chatgpt.service';
 import { ChatMessage } from '../externals/types/chat-message.interface';
-import { title } from 'process';
 import {
   SuggestTaskResponseDto,
   SuggestTaskResponseListDto,
