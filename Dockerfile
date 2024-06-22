@@ -62,6 +62,7 @@ RUN apt-get update && apt-get -qq install -y --no-install-recommends \
 COPY --chown=node:node --from=build /usr/src/app/package.json ./
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+COPY --chown=node:node --from=build /usr/src/app/.env .env
 
 EXPOSE 3000
 

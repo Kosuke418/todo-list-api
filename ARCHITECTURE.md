@@ -24,7 +24,7 @@
 │  tsconfig.build.json
 │  tsconfig.json
 │  yarn.lock
-│  
+│
 ├─.github
 │  └─workflows
 │          deploy-to-aws.yml
