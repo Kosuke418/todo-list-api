@@ -11,12 +11,7 @@ import { ExternalsModule } from './externals/externals.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: [
-        `.env.${process.env.NODE_ENV}.local`,
-        '.env.local',
-        `.env.${process.env.NODE_ENV}`,
-        '.env',
-      ],
+      envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
