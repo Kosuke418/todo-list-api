@@ -34,7 +34,7 @@ NestJSを使用して作成したシンプルなToDoアプリのAPIです。
    cp .env.example .env
    ```
 
-1. DBの起動
+1. DBの起動（この時点でdockerでもアプリが立ち上がるため、node, yarnをインストールしない場合は5000ポートで動作確認が可能）
 
    ```bash
    docker-compose up -d
