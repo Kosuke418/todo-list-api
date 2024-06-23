@@ -41,7 +41,6 @@ import { FindAllTaskQueryDto } from './dto/findall-task-query.dto';
 import { FindTaskQueryDto } from './dto/find-task-query.dto';
 import { SuggestTaskDto } from './dto/suggest-task.dto';
 import { SuggestTaskResponseListDto } from './dto/suggest-task-response.dto';
-import { NoCacheInterceptor } from 'src/common/interceptors/no-cache.interceptor';
 
 @ApiBearerAuth()
 @ApiTags('tasks')
