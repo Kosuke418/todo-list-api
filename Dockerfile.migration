@@ -13,7 +13,8 @@ COPY --chown=node:node package.json ./
 
 RUN yarn --frozen-lockfile
 
-COPY --chown=node:node . .
+COPY --chown=node:node ./src/db ./src/db
+COPY --chown=node:node .env .env
 
 USER node
 
