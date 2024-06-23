@@ -1,6 +1,9 @@
 import { Injectable, NestMiddleware, HttpStatus } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 
+/**
+ * @description Content-Typeの制限を行うMiddleware
+ */
 @Injectable()
 export class ContentTypeMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {

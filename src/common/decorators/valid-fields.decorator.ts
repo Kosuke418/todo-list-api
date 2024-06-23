@@ -1,6 +1,9 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 import { getMetadataArgsStorage, ObjectType } from 'typeorm';
 
+/**
+ * @description 値がEntityのfieldに含まれるかのバリデーション処理行うDecorator
+ */
 export function IsValidFields<T>(
   entityClass: ObjectType<T>,
   validationOptions?: ValidationOptions,

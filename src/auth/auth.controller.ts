@@ -7,7 +7,6 @@ import {
   ApiCreatedResponse,
   ApiUnauthorizedResponse,
   ApiInternalServerErrorResponse,
-  ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
@@ -25,7 +24,7 @@ import { NoCacheInterceptor } from '../common/interceptors/no-cache.interceptor'
 @UseInterceptors(NoCacheInterceptor)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-  @ApiOperation({ summary: 'ユーザ登録' })
+  @ApiOperation({ summary: 'ユーザ登録', description: 'ユーザの作成' })
   @ApiCreatedResponse({
     description: 'ユーザ登録完了',
     type: UserResponseDto,
@@ -43,9 +42,12 @@ export class AuthController {
     return await this.authService.signUp(createUserDto);
   }
 
-  @ApiOperation({ summary: 'ユーザ認証' })
-  @ApiOkResponse({
-    description: 'ユーザ認証完了',
+  @ApiOperation({
+    summary: 'ユーザ認証',
+    description: 'ユーザの認証(JWTを取得)',
+  })
+  @ApiCreatedResponse({
+    description: 'ユーザ認証成功',
     type: AccessTokenDto,
   })
   @ApiBadRequestResponse({

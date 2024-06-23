@@ -4,6 +4,9 @@ import OpenAI from 'openai';
 import { ChatMessage } from './types/chat-message.interface';
 import { ChatCompletion } from 'openai/resources';
 
+/**
+ * @description ChatGPTとの接続処理を行うクラス
+ */
 @Injectable()
 export class ChatGPTService {
   private readonly apiKey: string;

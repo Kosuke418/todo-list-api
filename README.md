@@ -78,10 +78,10 @@ TODOタスクを作成、検索、更新、および削除することができ�
 
 - **POST api/signup**: ユーザの作成
 - **POST api/signin**: ユーザの認証（JWTを取得）
-- **GET api/tasks**: すべてのタスクを取得
+- **GET api/tasks**: タスクの一覧を取得
 - **GET api/tasks/:id**: 指定したIDのタスクを取得
 - **POST api/tasks**: 新しいタスクを作成
-- **PATCH api/tasks**: タスクを更新
+- **PATCH api/tasks**: 指定したIDのタスクを更新
 - **DELETE api/tasks/:id**: 指定したIDのタスクを削除
 - **POST api/tasks/suggest**: 指定した目標を基にタスクを提案（ChatGPTを利用）
 
