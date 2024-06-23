@@ -6,8 +6,6 @@ on:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: ${{ secrets.ECR_MIGRATION_REPOSITORY }}
-  ECS_SERVICE: ${{ secrets.ECS_MIGRATION_SERVICE }}
-  ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
   ECS_TASK_DEFINITION: ${{ secrets.ECS_MIGRATION_TASK_DEFINITION }}
   CONTAINER_NAME: ${{ secrets.MIGRATION_CONTAINER_NAME }}
 
@@ -67,3 +65,9 @@ jobs:
           task-definition: task-definition.json
           container-name: ${{ env.CONTAINER_NAME }}
           image: ${{ steps.build-image.outputs.image }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          wait-for-service-stability: true
