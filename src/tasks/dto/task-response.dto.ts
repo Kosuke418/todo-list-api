@@ -14,7 +14,6 @@ export class TaskResponseDto {
     example: '運動をする',
     type: String,
     maxLength: 255,
-    required: false,
   })
   @Expose()
   title: string;
@@ -48,7 +47,6 @@ export class TaskResponseDto {
   @ApiProperty({
     example: 'DONE',
     type: String,
-    required: false,
   })
   @Expose()
   status: TaskStatus;
@@ -64,7 +62,6 @@ export class TaskResponseDto {
   @ApiProperty({
     example: '2024-06-17T19:00:38.022Z',
     type: Date,
-    required: false,
   })
   @Expose()
   createdAt: Date;
@@ -72,7 +69,6 @@ export class TaskResponseDto {
   @ApiProperty({
     example: '2024-06-17T19:00:38.022Z',
     type: Date,
-    required: false,
   })
   @Expose()
   updatedAt: Date;
