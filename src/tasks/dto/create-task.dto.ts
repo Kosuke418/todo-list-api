@@ -13,6 +13,7 @@ export class CreateTaskDto {
     example: '運動をする',
     type: String,
     maxLength: 255,
+    description: 'タイトル',
   })
   @IsString()
   @IsNotEmpty()
@@ -24,6 +25,7 @@ export class CreateTaskDto {
     type: String,
     maxLength: 255,
     required: false,
+    description: '内容',
   })
   @IsOptional()
   @IsString()
@@ -34,6 +36,7 @@ export class CreateTaskDto {
     example: '2024-06-17T19:00:38.022Z',
     type: Date,
     required: false,
+    description: '期日',
   })
   @IsOptional()
   @IsDate()
@@ -45,6 +48,7 @@ export class CreateTaskDto {
     type: String,
     maxLength: 255,
     required: false,
+    description: 'カテゴリ',
   })
   @IsOptional()
   @IsString()

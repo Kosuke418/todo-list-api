@@ -16,6 +16,7 @@ export class UpdateTaskDto {
   @ApiProperty({
     example: 'e6c015b3-cca1-4cca-970e-f0af96bf3727',
     type: String,
+    description: 'タスクid',
   })
   @IsUUID()
   @IsNotEmpty()
@@ -26,6 +27,7 @@ export class UpdateTaskDto {
     type: String,
     maxLength: 255,
     required: false,
+    description: 'タイトル',
   })
   @IsUndefinedable()
   @IsNotEmpty()
@@ -38,6 +40,7 @@ export class UpdateTaskDto {
     type: String,
     maxLength: 255,
     required: false,
+    description: '内容',
   })
   @IsOptional()
   @IsString()
@@ -45,18 +48,10 @@ export class UpdateTaskDto {
   content?: string;
 
   @ApiProperty({
-    example: 'DONE',
-    type: String,
-    required: false,
-  })
-  @IsUndefinedable()
-  @IsEnum(TaskStatus)
-  status?: TaskStatus;
-
-  @ApiProperty({
     example: '2024-06-17T19:00:38.022Z',
     type: Date,
     required: false,
+    description: '期日',
   })
   @IsOptional()
   @IsDate()
@@ -68,9 +63,20 @@ export class UpdateTaskDto {
     type: String,
     maxLength: 255,
     required: false,
+    description: 'カテゴリ',
   })
   @IsOptional()
   @IsString()
   @MaxLength(255)
   category?: string;
+
+  @ApiProperty({
+    example: 'DONE',
+    type: String,
+    required: false,
+    description: 'ステータス',
+  })
+  @IsUndefinedable()
+  @IsEnum(TaskStatus)
+  status?: TaskStatus;
 }

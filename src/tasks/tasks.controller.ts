@@ -50,7 +50,10 @@ import { NoCacheInterceptor } from '../common/interceptors/no-cache.interceptor'
 @UseInterceptors(ClassSerializerInterceptor)
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
-  @ApiOperation({ summary: 'タスク一覧取得' })
+  @ApiOperation({
+    summary: 'タスク一覧取得',
+    description: 'タスクの一覧を取得。',
+  })
   @ApiOkResponse({
     description: 'タスク一覧取得完了',
     type: TaskResponseListDto,
@@ -75,7 +78,10 @@ export class TasksController {
     return await this.tasksService.findAll(user, findAllTaskQueryDto);
   }
 
-  @ApiOperation({ summary: 'タスク詳細取得' })
+  @ApiOperation({
+    summary: 'タスク詳細取得',
+    description: '指定したIDのタスクを取得。',
+  })
   @ApiOkResponse({
     description: 'タスク詳細取得完了',
     type: TaskResponseDto,
@@ -105,7 +111,7 @@ export class TasksController {
     return await this.tasksService.findById(id, user, findTaskQueryDto);
   }
 
-  @ApiOperation({ summary: 'タスク登録' })
+  @ApiOperation({ summary: 'タスク登録', description: '新しいタスクを作成。' })
   @ApiCreatedResponse({
     description: 'タスク登録完了',
     type: TaskResponseDto,
@@ -133,6 +139,7 @@ export class TasksController {
 
   @ApiOperation({
     summary: 'タスク更新',
+    description: '指定したIDのタスクを更新。',
   })
   @ApiBody({ type: UpdateTaskDto })
   @ApiOkResponse({
@@ -164,7 +171,10 @@ export class TasksController {
     return await this.tasksService.updateStatus(updateTaskDto, user);
   }
 
-  @ApiOperation({ summary: 'タスク削除' })
+  @ApiOperation({
+    summary: 'タスク削除',
+    description: '指定したIDのタスクを削除',
+  })
   @ApiOkResponse({
     description: 'タスク削除完了',
   })
@@ -193,7 +203,10 @@ export class TasksController {
     await this.tasksService.delete(id, user);
   }
 
-  @ApiOperation({ summary: 'タスク提案' })
+  @ApiOperation({
+    summary: 'タスク提案',
+    description: '指定した目標を基にタスクを提案(ChatGPTを利用)',
+  })
   @ApiOkResponse({
     description: 'タスク更新完了',
     type: SuggestTaskResponseListDto,

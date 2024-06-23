@@ -40,6 +40,7 @@ export class TasksService {
       where: { userId: user.id },
       take: limit,
       skip: offset,
+      order: { createdAt: 'DESC' },
     });
     const taskResponseDto = plainToInstance(TaskResponseDto, tasks, {
       excludeExtraneousValues: true,

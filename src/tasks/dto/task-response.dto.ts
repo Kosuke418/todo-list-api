@@ -6,6 +6,7 @@ export class TaskResponseDto {
   @ApiProperty({
     example: 'e6c015b3-cca1-4cca-970e-f0af96bf3727',
     type: String,
+    description: 'タスクid',
   })
   @Expose()
   id: string;
@@ -14,6 +15,7 @@ export class TaskResponseDto {
     example: '運動をする',
     type: String,
     maxLength: 255,
+    description: 'タイトル',
   })
   @Expose()
   title: string;
@@ -23,6 +25,7 @@ export class TaskResponseDto {
     type: String,
     maxLength: 255,
     required: false,
+    description: '内容',
   })
   @Expose()
   content: string;
@@ -31,6 +34,7 @@ export class TaskResponseDto {
     example: '2024-06-17T19:00:38.022Z',
     type: Date,
     required: false,
+    description: '期日',
   })
   @Expose()
   dueDate?: Date;
@@ -40,6 +44,7 @@ export class TaskResponseDto {
     type: String,
     maxLength: 255,
     required: false,
+    description: 'カテゴリ',
   })
   @Expose()
   category?: string;
@@ -47,6 +52,7 @@ export class TaskResponseDto {
   @ApiProperty({
     example: 'DONE',
     type: String,
+    description: 'ステータス',
   })
   @Expose()
   status: TaskStatus;
@@ -55,6 +61,7 @@ export class TaskResponseDto {
     example: 'e6c015b3-cca1-4cca-970e-f0af96bf3727',
     type: String,
     maxLength: 255,
+    description: 'ユーザid',
   })
   @Expose()
   userId: string;
@@ -62,6 +69,7 @@ export class TaskResponseDto {
   @ApiProperty({
     example: '2024-06-17T19:00:38.022Z',
     type: Date,
+    description: '作成日時',
   })
   @Expose()
   createdAt: Date;
@@ -69,6 +77,7 @@ export class TaskResponseDto {
   @ApiProperty({
     example: '2024-06-17T19:00:38.022Z',
     type: Date,
+    description: '更新日時',
   })
   @Expose()
   updatedAt: Date;
@@ -81,6 +90,7 @@ export class TaskResponseListDto {
   @ApiProperty({
     example: '20',
     type: Number,
+    description: 'tasksのlength',
   })
   total?: number;
 }

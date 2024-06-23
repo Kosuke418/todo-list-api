@@ -5,6 +5,7 @@ export class SuggestTaskDto {
   @ApiProperty({
     example: '世界一のプログラマになる',
     type: String,
+    description: '目標',
   })
   @IsNotEmpty()
   @IsString()

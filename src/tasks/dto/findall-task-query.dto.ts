@@ -29,6 +29,7 @@ export class FindAllTaskQueryDto {
     example: 'title, status',
     type: String,
     required: false,
+    description: '指定したfieldをレスポンスとして返却',
   })
   @IsOptional()
   @IsValidFields(Task)

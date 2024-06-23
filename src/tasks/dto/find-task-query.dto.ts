@@ -9,6 +9,7 @@ export class FindTaskQueryDto {
     example: 'title, status',
     type: String,
     required: false,
+    description: '指定したfieldをレスポンスとして返却',
   })
   @IsOptional()
   @IsValidFields(Task)
