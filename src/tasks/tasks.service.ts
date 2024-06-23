@@ -75,13 +75,8 @@ export class TasksService {
     createTaskDto: CreateTaskDto,
     user: User,
   ): Promise<TaskResponseDto> {
-    const { title, content } = createTaskDto;
-    const task = this.taskRepository.create({
-      title,
-      content,
-      status: TaskStatus.NEW,
-      user,
-    });
+    const createTask = { ...createTaskDto, status: TaskStatus.NEW, user };
+    const task = this.taskRepository.create(createTask);
 
     await this.taskRepository.save(task);
 
@@ -94,7 +89,6 @@ export class TasksService {
     updateTaskDto: UpdateTaskDto,
     user: User,
   ): Promise<TaskResponseDto> {
-    // 更新後のタスクの状態をレスポンスで返すために一度取得
     const targetTask = await this.taskRepository.findOneBy({
       id: updateTaskDto.id,
       userId: user.id,
@@ -105,20 +99,6 @@ export class TasksService {
       );
     }
 
-    // undefinedの場合はレスポンスの内容を入れ替えずにおく
-    targetTask.title =
-      updateTaskDto.title !== undefined
-        ? updateTaskDto.title
-        : targetTask.title;
-    targetTask.content =
-      updateTaskDto.content !== undefined
-        ? updateTaskDto.content
-        : targetTask.content;
-    targetTask.status =
-      updateTaskDto.status !== undefined
-        ? updateTaskDto.status
-        : targetTask.status;
-
     const updatedResponse = await this.taskRepository.update(
       updateTaskDto.id,
       updateTaskDto,
@@ -127,7 +107,12 @@ export class TasksService {
       throw new NotFoundException('タスクを更新できませんでした');
     }
 
-    return plainToInstance(TaskResponseDto, targetTask, {
+    const updatedTask = await this.taskRepository.findOneBy({
+      id: updateTaskDto.id,
+      userId: user.id,
+    });
+
+    return plainToInstance(TaskResponseDto, updatedTask, {
       excludeExtraneousValues: true,
     });
   }
@@ -159,7 +144,7 @@ export class TasksService {
         ${referenceTasks}
         -----
         上記のTODOを参考かつ、被らないように
-        以下の目標を基にやるべきtodoを${OUTPUT_NUM}つ、JSONで出力。
+        以下の目標を基にやるべきtodoを${OUTPUT_NUM}個、JSONで出力。
         「${objective}」
 
         title:todoの概要(255文字以下)

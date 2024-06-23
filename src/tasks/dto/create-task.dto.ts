@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsDate,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateTaskDto {
   @ApiProperty({
@@ -21,5 +28,26 @@ export class CreateTaskDto {
   @IsOptional()
   @IsString()
   @MaxLength(255)
-  content: string;
+  content?: string;
+
+  @ApiProperty({
+    example: '2024-06-17T19:00:38.022Z',
+    type: Date,
+    required: false,
+  })
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  dueDate?: Date;
+
+  @ApiProperty({
+    example: '仕事',
+    type: String,
+    maxLength: 255,
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  category?: string;
 }

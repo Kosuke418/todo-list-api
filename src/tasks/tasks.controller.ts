@@ -41,6 +41,7 @@ import { FindAllTaskQueryDto } from './dto/findall-task-query.dto';
 import { FindTaskQueryDto } from './dto/find-task-query.dto';
 import { SuggestTaskDto } from './dto/suggest-task.dto';
 import { SuggestTaskResponseListDto } from './dto/suggest-task-response.dto';
+import { NoCacheInterceptor } from '../common/interceptors/no-cache.interceptor';
 
 @ApiBearerAuth()
 @ApiTags('tasks')
@@ -121,6 +122,7 @@ export class TasksController {
     description: 'DBサーバ接続エラー',
     type: InternalServerErrorResponseDto,
   })
+  @UseInterceptors(NoCacheInterceptor)
   @Post()
   async create(
     @Body() createTaskDto: CreateTaskDto,
@@ -153,6 +155,7 @@ export class TasksController {
     description: 'DBサーバ接続エラー',
     type: InternalServerErrorResponseDto,
   })
+  @UseInterceptors(NoCacheInterceptor)
   @Patch()
   async updateStatus(
     @Body() updateTaskDto: UpdateTaskDto,
@@ -181,6 +184,7 @@ export class TasksController {
     description: 'DBサーバ接続エラー',
     type: InternalServerErrorResponseDto,
   })
+  @UseInterceptors(NoCacheInterceptor)
   @Delete(':id')
   async delete(
     @Param('id', ParseUUIDPipe) id: string,
@@ -206,6 +210,7 @@ export class TasksController {
     description: 'DBサーバ接続エラー',
     type: InternalServerErrorResponseDto,
   })
+  @UseInterceptors(NoCacheInterceptor)
   @Post('suggest')
   async suggest(
     @Body() suggestTaskDto: SuggestTaskDto,
