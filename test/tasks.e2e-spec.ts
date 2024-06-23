@@ -52,6 +52,8 @@ describe('TasksController (e2e)', () => {
     status: TaskStatus.NEW,
     userId: mockUser1.id,
     id: 'e6c015b3-cca1-4cca-970e-f0af96bf3727',
+    category: 'category-1',
+    dueDate: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
     createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
     updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
   };
@@ -61,6 +63,8 @@ describe('TasksController (e2e)', () => {
     status: TaskStatus.NEW,
     userId: mockUser1.id,
     id: '7376a2cf-d6a8-7414-b40d-b0d7af888f54',
+    category: 'category-2',
+    dueDate: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
     createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
     updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
   };
@@ -70,6 +74,8 @@ describe('TasksController (e2e)', () => {
     status: TaskStatus.NEW,
     userId: mockUser2.id,
     id: 'b3947e05-98e9-bddf-ec5d-da7417e907fa',
+    category: 'category-3',
+    dueDate: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
     createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
     updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
   };
@@ -79,6 +85,8 @@ describe('TasksController (e2e)', () => {
     status: TaskStatus.NEW,
     userId: mockUser5.id,
     id: 'c588b1fd-d7d2-c178-41c1-97c27986ea04',
+    category: 'category-4',
+    dueDate: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
     createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
     updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
   };
@@ -88,6 +96,8 @@ describe('TasksController (e2e)', () => {
     status: TaskStatus.NEW,
     userId: mockUser5.id,
     id: '28e7b60b-4dbf-c411-5726-280cde58f94f',
+    category: 'category-5',
+    dueDate: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
     createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
     updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
   };
@@ -97,6 +107,8 @@ describe('TasksController (e2e)', () => {
     status: TaskStatus.NEW,
     userId: mockUser1.id,
     id: '3fe45d78-2987-2ab0-944f-9b68d8a4e4d7',
+    category: 'category-6',
+    dueDate: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
     createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
     updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
   };
@@ -195,7 +207,7 @@ describe('TasksController (e2e)', () => {
         .expect({
           statusCode: 400,
           message: [
-            'fieldsの指定が正しくありません。許可されているfields: id, title, content, status, userId, createdAt, updatedAt',
+            'fieldsの指定が正しくありません。許可されているfields: id, title, content, status, dueDate, category, userId, createdAt, updatedAt',
           ],
           error: 'Bad Request',
         });
@@ -265,6 +277,8 @@ describe('TasksController (e2e)', () => {
       const createTask: CreateTaskDto = {
         title: 'user-2-title-3',
         content: 'content-3',
+        category: 'category-3',
+        dueDate: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
       };
       const token = jwtService.sign(
         { id: mockUser4.id, username: mockUser4.username },
@@ -274,7 +288,10 @@ describe('TasksController (e2e)', () => {
       const expected = {
         title: createTask.title,
         content: createTask.content,
+        category: createTask.category,
+        dueDate: createTask.dueDate.toISOString(),
         status: TaskStatus.NEW,
+        userId: mockUser4.id,
       };
 
       await request(app.getHttpServer())
@@ -322,6 +339,8 @@ describe('TasksController (e2e)', () => {
       const updateTask: UpdateTaskDto = {
         id: mockTask4.id,
         content: 'test',
+        category: 'category-hoge',
+        dueDate: new Date(2023, 5 - 1, 5, 6, 35, 20, 333),
       };
       const token = jwtService.sign(
         { id: mockUser5.id, username: mockUser5.username },
@@ -330,10 +349,12 @@ describe('TasksController (e2e)', () => {
 
       const expected = {
         title: mockTask4.title,
-        content: 'test',
+        content: updateTask.content,
         status: TaskStatus.NEW,
+        category: updateTask.category,
+        dueDate: updateTask.dueDate.toISOString(),
         createdAt: mockTask1.createdAt.toISOString(),
-        updatedAt: mockTask1.updatedAt.toISOString(),
+        userId: mockUser5.id,
       };
 
       await request(app.getHttpServer())
@@ -345,6 +366,7 @@ describe('TasksController (e2e)', () => {
           const responseBody = { ...res.body };
           // UUIDをテストから省く
           delete responseBody.id;
+          delete responseBody.updatedAt;
 
           expect(responseBody).toEqual(expected);
         });

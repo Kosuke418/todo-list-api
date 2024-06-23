@@ -38,11 +38,14 @@ describe('AuthService', () => {
         username: 'testuser',
         password: 'testpass',
       };
-
-      const user = new User();
-      user.id = '3a0ac1d7-0328-9dbd-b2d5-16724a5385b5';
-      user.username = 'testuser';
-      user.password = await bcrypt.hash('testpass', 10);
+      const user: User = {
+        id: '3a0ac1d7-0328-9dbd-b2d5-16724a5385b5',
+        username: 'testuser',
+        password: await bcrypt.hash('testpass', 10),
+        tasks: [],
+        createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+        updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+      };
 
       jest.spyOn(userRepository, 'create').mockImplementation(async () => user);
       jest.spyOn(userRepository, 'save').mockImplementation(async () => user);
@@ -60,10 +63,14 @@ describe('AuthService', () => {
         password: 'testpass',
       };
 
-      const user = new User();
-      user.id = '3a0ac1d7-0328-9dbd-b2d5-16724a5385b5';
-      user.username = 'testuser';
-      user.password = await bcrypt.hash('testpass', 10);
+      const user: User = {
+        id: '3a0ac1d7-0328-9dbd-b2d5-16724a5385b5',
+        username: 'testuser',
+        password: await bcrypt.hash('testpass', 10),
+        tasks: [],
+        createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+        updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+      };
 
       jest
         .spyOn(userRepository, 'findOneBy')
@@ -96,10 +103,14 @@ describe('AuthService', () => {
         password: 'testpass',
       };
 
-      const user = new User();
-      user.id = '3a0ac1d7-0328-9dbd-b2d5-16724a5385b5';
-      user.username = 'testuser';
-      user.password = await bcrypt.hash('wrongpass', 10);
+      const user: User = {
+        id: '3a0ac1d7-0328-9dbd-b2d5-16724a5385b5',
+        username: 'testuser',
+        password: await bcrypt.hash('wrongpass', 10),
+        tasks: [],
+        createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+        updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+      };
 
       jest
         .spyOn(userRepository, 'findOneBy')

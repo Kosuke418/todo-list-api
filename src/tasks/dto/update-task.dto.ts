@@ -1,4 +1,5 @@
 import {
+  IsDate,
   IsEnum,
   IsNotEmpty,
   IsOptional,
@@ -9,6 +10,7 @@ import {
 import { TaskStatus } from '../types/task-status.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsUndefinedable } from '../../common/decorators/undefinedable.decorator';
+import { Type } from 'class-transformer';
 
 export class UpdateTaskDto {
   @ApiProperty({
@@ -50,4 +52,25 @@ export class UpdateTaskDto {
   @IsUndefinedable()
   @IsEnum(TaskStatus)
   status?: TaskStatus;
+
+  @ApiProperty({
+    example: '2024-06-17T19:00:38.022Z',
+    type: Date,
+    required: false,
+  })
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  dueDate?: Date;
+
+  @ApiProperty({
+    example: '仕事',
+    type: String,
+    maxLength: 255,
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  category?: string;
 }

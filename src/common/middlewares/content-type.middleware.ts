@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from 'express';
 export class ContentTypeMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     if (
-      req.method === 'POST' &&
+      (req.method === 'POST' || req.method === 'PATCH') &&
       req.headers['content-type'] !== 'application/json'
     ) {
       return res.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).json({

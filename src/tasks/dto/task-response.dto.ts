@@ -29,12 +29,37 @@ export class TaskResponseDto {
   content: string;
 
   @ApiProperty({
+    example: '2024-06-17T19:00:38.022Z',
+    type: Date,
+    required: false,
+  })
+  @Expose()
+  dueDate?: Date;
+
+  @ApiProperty({
+    example: '仕事',
+    type: String,
+    maxLength: 255,
+    required: false,
+  })
+  @Expose()
+  category?: string;
+
+  @ApiProperty({
     example: 'DONE',
     type: String,
     required: false,
   })
   @Expose()
   status: TaskStatus;
+
+  @ApiProperty({
+    example: 'e6c015b3-cca1-4cca-970e-f0af96bf3727',
+    type: String,
+    maxLength: 255,
+  })
+  @Expose()
+  userId: string;
 
   @ApiProperty({
     example: '2024-06-17T19:00:38.022Z',

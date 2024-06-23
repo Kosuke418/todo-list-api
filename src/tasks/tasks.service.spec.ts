@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TasksService } from './tasks.service';
 import { User } from '../db/entities/user.entity';
 import { TaskStatus } from './types/task-status.enum';
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Task } from '../db/entities/task.entity';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
@@ -11,6 +11,10 @@ import { FindAllTaskQueryDto } from './dto/findall-task-query.dto';
 import { FindTaskQueryDto } from './dto/find-task-query.dto';
 import { ChatGPTService } from '../externals/chatgpt.service';
 import { ConfigService } from '@nestjs/config';
+import {
+  SuggestTaskResponseDto,
+  SuggestTaskResponseListDto,
+} from './dto/suggest-task-response.dto';
 
 const mockUser1: User = {
   id: '1',
@@ -32,6 +36,7 @@ const mockUser2: User = {
 
 describe('TasksService', () => {
   let tasksService: TasksService;
+  let chatGPTService: ChatGPTService;
   let taskRepository: Repository<Task>;
 
   beforeEach(async () => {
@@ -48,6 +53,7 @@ describe('TasksService', () => {
     }).compile();
 
     tasksService = module.get<TasksService>(TasksService);
+    chatGPTService = module.get<ChatGPTService>(ChatGPTService);
     taskRepository = module.get<Repository<Task>>(
       getRepositoryToken(Task),
     ) as jest.Mocked<Repository<Task>>;
@@ -55,10 +61,35 @@ describe('TasksService', () => {
 
   describe('findAll', () => {
     it('正常系', async () => {
-      const tasks: Task[] = [];
+      const tasks: Task[] = [
+        {
+          title: 'user-1-title-1',
+          content: 'content-1',
+          status: TaskStatus.NEW,
+          userId: mockUser1.id,
+          id: 'e6c015b3-cca1-4cca-970e-f0af96bf3727',
+          createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+          updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+          category: 'category-1',
+          dueDate: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+          user: mockUser1,
+        },
+      ];
       const expected: TaskResponseListDto = {
-        tasks,
-        total: 0,
+        tasks: [
+          {
+            title: 'user-1-title-1',
+            content: 'content-1',
+            status: TaskStatus.NEW,
+            userId: mockUser1.id,
+            id: 'e6c015b3-cca1-4cca-970e-f0af96bf3727',
+            createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+            updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+            category: 'category-1',
+            dueDate: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+          },
+        ],
+        total: 1,
       };
       const query: FindAllTaskQueryDto = { limit: 10 };
       jest.spyOn(taskRepository, 'find').mockImplementation(async () => tasks);
@@ -75,18 +106,26 @@ describe('TasksService', () => {
         id: 'hoge',
         title: 'hogehoge',
         content: 'hoge',
+        userId: mockUser1.id,
         status: TaskStatus.NEW,
+        category: 'category-1',
+        dueDate: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
         createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
         updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
       };
 
-      const task = new Task();
-      task.id = 'hoge';
-      task.title = 'hogehoge';
-      task.content = 'hoge';
-      task.status = TaskStatus.NEW;
-      task.createdAt = new Date(2022, 5 - 1, 5, 6, 35, 20, 333);
-      task.updatedAt = new Date(2022, 5 - 1, 5, 6, 35, 20, 333);
+      const task: Task = {
+        id: 'hoge',
+        title: 'hogehoge',
+        content: 'hoge',
+        userId: mockUser1.id,
+        user: mockUser1,
+        status: TaskStatus.NEW,
+        category: 'category-1',
+        dueDate: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+        createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+        updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+      };
 
       jest
         .spyOn(taskRepository, 'findOne')
@@ -111,18 +150,26 @@ describe('TasksService', () => {
         id: 'hoge',
         title: 'hogehoge',
         content: 'hoge',
+        userId: mockUser1.id,
         status: TaskStatus.NEW,
+        category: 'category-1',
+        dueDate: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
         createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
         updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
       };
 
-      const task = new Task();
-      task.id = 'hoge';
-      task.title = 'hogehoge';
-      task.content = 'hoge';
-      task.status = TaskStatus.NEW;
-      task.createdAt = new Date(2022, 5 - 1, 5, 6, 35, 20, 333);
-      task.updatedAt = new Date(2022, 5 - 1, 5, 6, 35, 20, 333);
+      const task: Task = {
+        id: 'hoge',
+        title: 'hogehoge',
+        content: 'hoge',
+        userId: mockUser1.id,
+        user: mockUser1,
+        status: TaskStatus.NEW,
+        category: 'category-1',
+        dueDate: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+        createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+        updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+      };
 
       jest.spyOn(taskRepository, 'create').mockImplementation(() => task);
       jest.spyOn(taskRepository, 'save').mockImplementation(async () => task);
@@ -138,22 +185,56 @@ describe('TasksService', () => {
   });
 
   describe('updateStatus', () => {
-    const task = new Task();
-    task.id = 'hoge';
-    task.title = 'hogehoge';
-    task.content = 'hoge';
-    task.status = TaskStatus.NEW;
+    const task: Task = {
+      id: 'hoge',
+      title: 'hogehoge',
+      content: 'hoge',
+      userId: mockUser1.id,
+      user: mockUser1,
+      status: TaskStatus.NEW,
+      category: 'category-1',
+      dueDate: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+      createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+      updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+    };
+
     const updateResponse = new UpdateResult();
     updateResponse.affected = 1;
 
     it('正常系', async () => {
+      const updatedTask: Task = {
+        id: 'hoge',
+        title: 'title',
+        content: 'content',
+        status: TaskStatus.DONE,
+        userId: mockUser1.id,
+        user: mockUser1,
+        category: 'category-1',
+        dueDate: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+        createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+        updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+      };
+      const expected: TaskResponseDto = {
+        id: 'hoge',
+        title: 'title',
+        content: 'content',
+        status: TaskStatus.DONE,
+        userId: mockUser1.id,
+        category: 'category-1',
+        dueDate: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+        createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+        updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+      };
       jest
         .spyOn(taskRepository, 'findOneBy')
         .mockImplementation(async () => task);
-      const spy = jest
+      jest
         .spyOn(taskRepository, 'update')
         .mockImplementation(async () => updateResponse);
-      await tasksService.updateStatus(
+      jest
+        .spyOn(taskRepository, 'findOneBy')
+        .mockImplementation(async () => updatedTask);
+      const result = await tasksService.updateStatus(
         {
           id: 'hoge',
           title: 'title',
@@ -162,7 +243,7 @@ describe('TasksService', () => {
         },
         mockUser1,
       );
-      expect(spy).toHaveBeenCalled();
+      expect(result).toEqual(expected);
     });
 
     it('異常系: 他者のタスクを変更またはタスクが存在しない', async () => {
@@ -209,11 +290,18 @@ describe('TasksService', () => {
   });
 
   describe('delete', () => {
-    const task = new Task();
-    task.id = 'hoge';
-    task.title = 'hogehoge';
-    task.content = 'hoge';
-    task.status = TaskStatus.NEW;
+    const task: Task = {
+      id: 'hoge',
+      title: 'hogehoge',
+      content: 'hoge',
+      userId: mockUser1.id,
+      user: mockUser1,
+      status: TaskStatus.NEW,
+      category: 'category-1',
+      dueDate: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+      createdAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+      updatedAt: new Date(2022, 5 - 1, 5, 6, 35, 20, 333),
+    };
 
     it('正常系', async () => {
       jest
@@ -243,6 +331,49 @@ describe('TasksService', () => {
         .mockImplementation(async () => deleteResponse);
       await expect(tasksService.delete('hoge', mockUser1)).rejects.toThrow(
         NotFoundException,
+      );
+    });
+  });
+
+  describe('suggest', () => {
+    it('正常系', async () => {
+      const suggetResponses: SuggestTaskResponseDto[] = [
+        {
+          title: 'title1',
+          content: 'content1',
+        },
+        {
+          title: 'title2',
+          content: 'content2',
+        },
+        {
+          title: 'title3',
+          content: 'content3',
+        },
+      ];
+      const expected: SuggestTaskResponseListDto = {
+        tasks: suggetResponses,
+        total: 3,
+      };
+
+      jest.spyOn(taskRepository, 'find').mockImplementation(async () => []);
+      jest
+        .spyOn(chatGPTService, 'generateResponse')
+        .mockImplementation(async () => JSON.stringify(suggetResponses));
+      const result = await tasksService.suggest('hoge', mockUser1);
+
+      expect(result).toEqual(expected);
+    });
+
+    it('異常系: 接続の失敗', async () => {
+      jest.spyOn(taskRepository, 'find').mockImplementation(async () => []);
+      jest
+        .spyOn(chatGPTService, 'generateResponse')
+        .mockImplementation(async () => {
+          throw new BadRequestException('生成に失敗しました');
+        });
+      await expect(tasksService.suggest('hoge', mockUser1)).rejects.toThrow(
+        BadRequestException,
       );
     });
   });
